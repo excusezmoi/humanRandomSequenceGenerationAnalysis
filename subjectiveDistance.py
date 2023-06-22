@@ -38,8 +38,8 @@ def printSubjectiveDistanceExe(participantNumber, numOrAct, slowOrFast, totalPar
     df = startToReadCSVAndConvertToFloat(totalParticipant)
     df, dictGood = correctDict(df, participantNumber, numOrAct)
     randomDistance, averageDistance = averageLengthBetweenResponses(df, response, length, dictGood)
-    print("average subjective distance if the sequence is random:", randomDistance, 
-          "\naverage actual distance from their random sequence:", averageDistance)
+    print("the average subjective distance if the sequence is random:", randomDistance, 
+          "\nthe average actual distance from their random sequence:", averageDistance)
 
 if __name__ == "__main__":
 
