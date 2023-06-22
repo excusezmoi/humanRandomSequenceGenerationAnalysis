@@ -1,4 +1,4 @@
-# #read a txt file and convert it into a pandas dataframe
+# read a txt file and convert it into a pandas dataframe
 
 import numpy as np
 import pandas as pd
