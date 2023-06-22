@@ -11,7 +11,7 @@ The configuration file for the analysis. The file is in the format of ini file, 
 
 ### Folders
 - responseFileFolder: containing the response files, which are the txt files with responses of the subjects
-- rgCalcResultsFilder: containing the output result files of the software "rgCalc"
+- rgCalcResultsFolder: containing the output result files of the software "rgCalc"
 
 ## Data Processing
 

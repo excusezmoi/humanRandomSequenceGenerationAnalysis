@@ -37,7 +37,7 @@ def convertTxtStringsToDataFrame(txtFileFolder):
 if __name__ == "__main__":
     totalParticipant = 9
 
-    txtFileFolder = configFilePath("FOLDER","rgCalcResultsFilder")
+    txtFileFolder = configFilePath("FOLDER","rgCalcResultsFolder")
     convertTxtStringsToDataFrame(txtFileFolder)
     # Write dataframe to a csv file
     # df.to_csv("W:/Me/Research/心理/0427報告/rgCalcResults/rgCalcResults.csv", index=True)
