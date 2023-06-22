@@ -2,9 +2,20 @@ library(ARTool)
 library(tidyr)
 library(rcompanion)
 library(rstatix)
+library(ini)
+library(rstudioapi)
+library(stringr)
+
+# Read the config file
+currentFolder <- str_sub(getSourceEditorContext()$path, 1, -18) # -18 to remove the file name
+configPath <- paste(currentFolder, "/config.ini", sep = "")
+config <- read.ini(configPath, encoding = "UTF-8")
+
+# Access and print the values
+# print(config)
 
 #read csv file
-dataRandom <- read.csv("W:/Me/Research/心理/0427報告/rgCalcResults/rgCalcResults.csv", header = TRUE, sep = ",")
+dataRandom <- read.csv(config$FILES$rgCalcResultsCSVFile, header = TRUE, sep = ",")
 print(dataRandom)
 
 #extract (s or f) and (num or act) respectively as two variables 
