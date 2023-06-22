@@ -37,7 +37,7 @@ def markovChainExeNew(totalParticipant, txtFileFolder ,conditions = ["snum", "fn
             # Print the resulting matrix
             print("Markov:\n",matrix)
             objectiveWeighting = np.array([[i for i in range(6)],[1,0,1,2,3,4],[2,1,0,1,2,3],[3,2,1,0,1,2],[4,3,2,1,0,1],[5,4,3,2,1,0]])
-            sumMatrix = matrix*objectiveWeighting #turn it into the concept of distance: the same number equals zero distance
+            sumMatrix = matrix*objectiveWeighting #turn it into the concept of distance, e.g. the same number equals zero distance
             print("Weighted:\n",sumMatrix)
             print(f"p{i},{j} sum:", np.sum(sumMatrix)/(lengthTXTFile-1)) #this is the average objective distance between each responses
 
