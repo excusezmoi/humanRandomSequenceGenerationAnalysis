@@ -3,7 +3,20 @@ library(ggplot2)
 #library(compute.es)
 library(lsr)
 library(effsize)
-data = openxlsx::read.xlsx("W:/Me/Research/心理/初步資料.xlsx")
+library(ini)
+library(rstudioapi)
+library(stringr)
+
+# Read the config file
+currentFolder <- str_sub(getSourceEditorContext()$path, 1, -27) # -27 to remove the file name
+configPath <- paste(currentFolder, "/config.ini", sep = "")
+config <- read.ini(configPath, encoding = "UTF-8")
+
+# Access and print the values
+# print(config)
+
+#read xlsx file
+data = openxlsx::read.xlsx(config$FILES$distanceDataXLSXFile)
 data = data[1:9,]
 
 #踢人
