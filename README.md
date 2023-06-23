@@ -17,27 +17,31 @@ The configuration file for the analysis. The file is in the format of ini file, 
 
 Python is used in this stage of data processing.
 
-### utils.py
+### Purely Subjective Similarity Related
+
+#### utils.py
 
 Containing the essential functions to process the data. These functions are called by the other Python files.
 
-### MDS.py
+#### MDS.py
 
 Perform MDS analysis on the subjective similarity data. The outputs are 2D plots of the data.
 
-### cluster.py (failed)
+#### cluster.py (failed)
 
 Perform clustering analysis on the subjective similarity data. Nothing is found in this step.
 
-### similarityCorrelation.py
+#### similarityCorrelation.py
 
 Calculate the correlation of the subjective similarity matrices between two participants.
 
-### Markov.py
+### Both Subjective Similarity and Actual Sequence Related
+
+#### Markov.py
 
 **Show the Markov matrix of the "number" condition** of each participant. And also the weighted Markov matrix, which considers the objective distance between the numbers.
 
-### subjectiveDistance.py
+#### subjectiveDistance.py
 
 Shows
 - randomDistance: the average subjective distance if the sequence is random
@@ -47,15 +51,17 @@ Both the values of "numbers" or "action" conditions can be shown.
 
 ## Before Data Analysis...
 
-### rgCalc
+### Purely Actual Sequence Related
+ 
+#### rgCalc
 
 The software "rgCalc" is used to calculate the randomness of the sequences.
 
-### readRgcalcResults.py
+#### readRgcalcResults.py
 
 Read the TXT results of the software "rgCalc" and convert them to pandas dataframe. It also writes the dataframe to CSV files.
 
-### CfIndex.py
+#### CfIndex.py
 
 Calculate the correlation function index of the sequences. The index is calculated by the following formula:
 
