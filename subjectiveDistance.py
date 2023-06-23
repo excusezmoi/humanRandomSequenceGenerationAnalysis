@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 
-from main import configFilePath, startToReadCSVAndConvertToFloat, readResponseTxtFile, correctDict
+from utils import configFilePath, startToReadCSVAndConvertToFloat, readResponseTxtFile, correctDict
 
 #calculate the average distance of true random sequence and the generated sequence 
 def averageLengthBetweenResponses(df, response, length, goodDict):

@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.cluster import KMeans
 
-from main import startToSimilarMatrix, startToReadCSVAndConvertToFloat, createMatrix, toSimilarityMatrix
+from utils import startToSimilarMatrix, startToReadCSVAndConvertToFloat, createMatrix, toSimilarityMatrix
 
 def clusteringElbowMethodExe(numOrAct, totalParticipant):
     #kmeans clustering of subjective similarity matrices

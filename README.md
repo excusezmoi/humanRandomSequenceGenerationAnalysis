@@ -17,7 +17,7 @@ The configuration file for the analysis. The file is in the format of ini file, 
 
 Python is used in this stage of data processing.
 
-### main.py
+### utils.py
 
 Containing the essential functions to process the data. These funcitons are called by the other python files.
 

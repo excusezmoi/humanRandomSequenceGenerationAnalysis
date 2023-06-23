@@ -1,7 +1,7 @@
 import numpy as np
 import csv
 
-from main import readResponseTxtFile, configFilePath
+from utils import readResponseTxtFile, configFilePath
 
 #Create a markov chain based on the sequences
 def markovChainExeNew(totalParticipant, txtFileFolder ,conditions = ["snum", "fnum"]):

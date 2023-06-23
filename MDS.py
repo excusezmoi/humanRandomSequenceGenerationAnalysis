@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.manifold import MDS
 
-from main import startToSimilarMatrix, similarityToDissimilarity, startToReadCSVAndConvertToFloat, createMatrix, toSimilarityMatrix
+from utils import startToSimilarMatrix, similarityToDissimilarity, startToReadCSVAndConvertToFloat, createMatrix, toSimilarityMatrix
 
 #Plot the MDS
 def plotMDS(dissimilar, numOrAct):

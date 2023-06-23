@@ -3,7 +3,7 @@
 import numpy as np
 import pandas as pd
 
-from main import configFilePath
+from utils import configFilePath
 
 def convertTxtStringsToDataFrame(txtFileFolder):
     allResults, rowNames = [], []
