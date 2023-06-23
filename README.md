@@ -55,6 +55,14 @@ The software "rgCalc" is used to calculate the randomness of the sequences.
 
 Read the TXT results of the software "rgCalc" and convert them to pandas dataframe. It also writes the the dataframe to CSV files.
 
+### CfIndex.py
+
+Calculate the correlation function index of the sequences. The index is calculated by the following formula:
+
+```
+Cf(i) = X(i) / n  
+```
+
 ## Data Analysis
 
 This stage of data analysis is done in R.
