@@ -16,25 +16,25 @@ config <- read.ini(configPath, encoding = "UTF-8")
 # print(config)
 
 #read csv file
-rgCalcdata <- read.csv(config$FILES$rgCalcResultsCSVFile, header = TRUE, sep = ",")
-print(rgCalcdata)
+rgCalcData <- read.csv(config$FILES$rgCalcResultsCSVFile, header = TRUE, sep = ",")
+print(rgCalcData)
 
 #extract (s or f) and (num or act) respectively as two variables 
 speed = c(); numOrAct = c()
-for (i in rgCalcdata$type) {
+for (i in rgCalcData$type) {
   speed = append(speed, substr(i, 1, 1))
   numOrAct = append(numOrAct, substr(i, 2, 4))
 }
 
-sortedDataR = data.frame(rgCalcdata$subject, speed, numOrAct, rgCalcdata$R)
+sortedDataR = data.frame(rgCalcData$subject, speed, numOrAct, rgCalcData$R)
 
-sortedDataAll = data.frame(rgCalcdata[1], speed, numOrAct, rgCalcdata[,c(4:60)])
+sortedDataAll = data.frame(rgCalcData[1], speed, numOrAct, rgCalcData[,c(4:60)])
 
 colnames(sortedDataR)[1] <- "subject"
 colnames(sortedDataR)[4] <- "R"
 
 #踢掉董
-rgCalcdata <- subset(rgCalcdata, subject != "3")
+rgCalcData <- subset(rgCalcData, subject != "3")
 sortedDataR <- subset(sortedDataR, subject != "3")
 
 #art analysis and effect size

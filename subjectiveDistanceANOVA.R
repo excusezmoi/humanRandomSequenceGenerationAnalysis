@@ -169,5 +169,3 @@ ggplot(means, aes(x = realTypes, y = realDistance)) +
   
   labs(x = "realTypes", y = "realDistance") +
   theme_classic()
-
-

@@ -15,26 +15,25 @@ config <- read.ini(configPath, encoding = "UTF-8")
 # print(config)
 
 #read csv file
-dataRandom <- read.csv(config$FILES$rgCalcResultsCSVFile, header = TRUE, sep = ",")
-print(dataRandom)
+rgCalcData <- read.csv(config$FILES$rgCalcResultsCSVFile, header = TRUE, sep = ",")
+print(rgCalcData)
 
 #extract (s or f) and (num or act) respectively as two variables
-speed <- c()
-numOrAct <- c()
-for (i in dataRandom$type) {
+speed <- c(); numOrAct <- c()
+for (i in rgCalcData$type) {
   speed <- append(speed, substr(i, 1, 1))
   numOrAct <- append(numOrAct, substr(i, 2, 4))
 }
 
-dataRandomTry <- data.frame(dataRandom[1], speed, numOrAct, dataRandom[, c(4:60)])
+sortedDataAll <- data.frame(rgCalcData[1], speed, numOrAct, rgCalcData[, c(4:60)])
 
 #踢掉董
-dataRandom <- subset(dataRandom, subject != "3")
-dataRandomTry <- subset(dataRandomTry, subject != "3")
+rgCalcData <- subset(rgCalcData, subject != "3")
+sortedDataAll <- subset(sortedDataAll, subject != "3")
 
 
 #R art analysis and effect size
-resultRand <- art(R ~ factor(speed) * factor(numOrAct) + Error(factor(subject)), data = dataRandomTry)
+resultRand <- art(R ~ factor(speed) * factor(numOrAct) + Error(factor(subject)), data = sortedDataAll)
 result <- anova(resultRand)
 print(result, verbose = TRUE)
 
@@ -75,7 +74,7 @@ for (combination in 1:10000) {
   count[[i]] <- 0
   }
   for (participant in bootstrappedParticipants[combination, ]) {
-    addThisTime <- dataRandomTry[dataRandomTry$subject == participant, ]
+    addThisTime <- sortedDataAll[sortedDataAll$subject == participant, ]
     count[[participant]] <- count[[participant]] + 1
     addThisTime$subject = paste0(c(addThisTime$subject, count[[participant]]), collapse = "_")
     btData <- rbind(btData, addThisTime)
@@ -115,15 +114,15 @@ print(power3)
 
 #Use the non-parametric method to calculate the simple main effects
 #speed
-speedS <- subset(dataRandomTry, speed == "s")
-speedF <- subset(dataRandomTry, speed == "f")
+speedS <- subset(sortedDataAll, speed == "s")
+speedF <- subset(sortedDataAll, speed == "f")
 speedS <-speedS[, c("subject", "R")]
 speedF <- speedF[, c("subject", "R")]
 
 
 #numOrAct
-num <- subset(dataRandomTry, numOrAct == "num")
-act <- subset(dataRandomTry, numOrAct == "act")
+num <- subset(sortedDataAll, numOrAct == "num")
+act <- subset(sortedDataAll, numOrAct == "act")
 num <- num[, c("subject", "R")]
 act <- act[, c("subject", "R")]
 
@@ -156,13 +155,13 @@ numOrAct
 #use wilcoxon test to do multiple comparison
 
 #speed
-multiSpeed = wilcox.test(dataRandomTry[dataRandomTry$speed == "s",]$R, dataRandomTry[dataRandomTry$speed == "f",]$R, paired = TRUE)
+multiSpeed = wilcox.test(sortedDataAll[sortedDataAll$speed == "s",]$R, sortedDataAll[sortedDataAll$speed == "f",]$R, paired = TRUE)
 multiSpeed
-multiNumOrAct = wilcox.test(dataRandomTry[dataRandomTry$numOrAct == "num",]$R, dataRandomTry[dataRandomTry$numOrAct == "act",]$R, paired = TRUE)
+multiNumOrAct = wilcox.test(sortedDataAll[sortedDataAll$numOrAct == "num",]$R, sortedDataAll[sortedDataAll$numOrAct == "act",]$R, paired = TRUE)
 multiNumOrAct
 
 #effect size
-effsizeSpeed <- wilcox_effsize(dataRandomTry, R ~ speed, paired = TRUE, conf.level = 0.95)
+effsizeSpeed <- wilcox_effsize(sortedDataAll, R ~ speed, paired = TRUE, conf.level = 0.95)
 effsizeSpeed
 
 
@@ -172,14 +171,14 @@ library(ggplot2)
 library(plyr)
 
 # Calculate bootstrapped standard errors for each participant
-se_df <- ddply(dataRandomTry, .(subject, speed, numOrAct), summarise, se = sd(R)/sqrt(length(R)))
+se_df <- ddply(sortedDataAll, .(subject, speed, numOrAct), summarise, se = sd(R)/sqrt(length(R)))
 se_df$se[is.na(se_df$se)] <- 0  # Replace NAs with zeros
 
 # Merge the standard error data with the original data
-dataRandomTry <- merge(dataRandomTry, se_df, by = c("subject", "speed", "numOrAct"))
+sortedDataAll <- merge(sortedDataAll, se_df, by = c("subject", "speed", "numOrAct"))
 
 # Plot the data with error bars
-ggplot(dataRandomTry, aes(x = numOrAct, y = R, color = speed, group = interaction(speed, subject))) +
+ggplot(sortedDataAll, aes(x = numOrAct, y = R, color = speed, group = interaction(speed, subject))) +
   geom_point(size = 3, position = position_dodge(width = 0.8)) +
   geom_errorbar(aes(ymin = R - se, ymax = R + se), position = position_dodge(width = 0.8), width = 0.2) +
   facet_wrap(~subject, scales = "free") +
