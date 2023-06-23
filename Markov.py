@@ -3,10 +3,10 @@ import csv
 
 from utils import readResponseTxtFile, configFilePath
 
-#Create a markov chain based on the sequences
-def markovChainExeNew(totalParticipant, txtFileFolder ,conditions = ["snum", "fnum"]):
+#Create a Markov chain based on the sequences
+def MarkovChainExeNew(totalParticipant, txtFileFolder ,conditions = ["snum", "fnum"]):
 
-    # markovAll = []
+    # MarkovAll = []
     objectiveDistance = [[],[]]
 
     for i in range(1, totalParticipant+1):
@@ -18,18 +18,18 @@ def markovChainExeNew(totalParticipant, txtFileFolder ,conditions = ["snum", "fn
 
             txtFile, lengthTXTFile = readResponseTxtFile(txtFilePath)
 
-            markovDict = {}
+            MarkovDict = {}
             for order, current in enumerate(txtFile):
                 if order:
-                    markovDict.setdefault((lastOne, current), 0)
-                    markovDict[(lastOne, current)] += 1
+                    MarkovDict.setdefault((lastOne, current), 0)
+                    MarkovDict[(lastOne, current)] += 1
                 lastOne = current
 
             # Initialize the matrix with zeros
             matrix = np.zeros((6, 6))
 
             # Fill in the matrix with the dictionary values
-            for pair, occurences in markovDict.items():
+            for pair, occurences in MarkovDict.items():
                 I = int(pair[0]) - 1
                 J = int(pair[1]) - 1
                 matrix[I, J] = occurences
@@ -45,9 +45,9 @@ def markovChainExeNew(totalParticipant, txtFileFolder ,conditions = ["snum", "fn
                 objectiveDistance[0].append(np.sum(sumMatrix)/(lengthTXTFile-1))
             else:
                 objectiveDistance[1].append(np.sum(sumMatrix)/(lengthTXTFile-1))
-            # markovAll.append(markovDict)
+            # MarkovAll.append(MarkovDict)
     
-            # print(markovDict)
+            # print(MarkovDict)
 
     return objectiveDistance
 
@@ -60,15 +60,84 @@ def writeMarkovToCSV(objectiveDistance, filePath):
 
     #close the csv file
     csvFile.close()
+###################
+def MarkovChainDecorator(func):
+    def wrapper(totalParticipant, txtFileFolder, conditions=["snum", "fnum"]):
+        objectiveDistance = [[], []]
 
+        for i in range(1, totalParticipant + 1):
+            print("i=", i)
+            for j in conditions:
+                txtFileName = "/p" + str(i) + f" {j}.txt"
+                txtFilePath = txtFileFolder + txtFileName
+
+                txtFile, lengthTXTFile = readResponseTxtFile(txtFilePath)
+
+                # Call the main function
+                result = func(txtFile, lengthTXTFile, i, j)
+                
+                if j == "snum":
+                    objectiveDistance[0].append(result)
+                else:
+                    objectiveDistance[1].append(result)
+
+        return objectiveDistance
+
+    return wrapper
+
+@MarkovChainDecorator
+def MarkovChain(txtFile, lengthTXTFile, participant, condition):
+
+    # Create a dictionary of the Markov chain, which has the structure {(lastOne, current): occurrences}
+    def createMarkovDict(txtFile):
+        MarkovDict = {}
+        for order, current in enumerate(txtFile):
+            if order:
+                MarkovDict.setdefault((lastOne, current), 0)
+                MarkovDict[(lastOne, current)] += 1
+            lastOne = current
+        return MarkovDict
+
+    def MarkovMatrix(MarkovDict):
+        # Initialize the matrix with zeros
+        matrix = np.zeros((6, 6))
+
+        # Fill in the matrix with the dictionary values
+        for pair, occurrences in MarkovDict.items():
+            I = int(pair[0]) - 1
+            J = int(pair[1]) - 1
+            matrix[I, J] = occurrences
+
+        return matrix
+
+    def MarkovMatrixWithWeighting(MarkovMatrix):
+        objectiveWeighting = np.array([[i for i in range(6)], [1, 0, 1, 2, 3, 4], [2, 1, 0, 1, 2, 3], [3, 2, 1, 0, 1, 2], [4, 3, 2, 1, 0, 1], [5, 4, 3, 2, 1, 0]])
+        sumMatrix = MarkovMatrix * objectiveWeighting
+        return sumMatrix
+    
+    def averageObjectiveDistance(sumMatrix):
+        AOD = np.sum(sumMatrix) / (lengthTXTFile - 1)
+        return AOD
+
+    MarkovDict = createMarkovDict(txtFile)
+    MarkovMatrix = MarkovMatrix(MarkovDict)
+    MarkovMatrixWithWeighting = MarkovMatrixWithWeighting(MarkovMatrix) 
+    averageObjectiveDistance = averageObjectiveDistance(MarkovMatrixWithWeighting)
+    
+    return averageObjectiveDistance
+
+
+###################
 if __name__ == "__main__":
     
     totalParticipant = 9
     txtFileFolder = configFilePath("FOLDER","responseFileFolder")
     
-    objectiveDistance = markovChainExeNew(totalParticipant, txtFileFolder, conditions = ["snum", "fnum"])
+    objectiveDistance = MarkovChainExeNew(totalParticipant, txtFileFolder, conditions = ["snum", "fnum"])
     
     # #write to file
     # writeFilePath = "W:/Me/Research/心理/0427報告/originalDistance.csv"
     # writeMarkovToCSV(objectiveDistance, writeFilePath)
 
+    objectiveDistance2 = MarkovChain(totalParticipant, txtFileFolder, conditions = ["snum", "fnum"])
+    print(objectiveDistance2)
