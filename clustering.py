@@ -13,7 +13,7 @@ def clusteringElbowMethodExe(numOrAct, totalParticipant):
     similarityMatrixAll = []
 
     for i in range(totalParticipant):
-        participantNumber = i+1
+        participantNumber = i + 1
         similarityMatrixAll.append(startToSimilarMatrix(participantNumber, numOrAct, totalParticipant))
 
     # create a numpy array to store the similarity matrices

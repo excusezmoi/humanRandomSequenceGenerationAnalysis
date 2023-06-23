@@ -35,7 +35,7 @@ def startToReadCSVAndConvertToFloat(currentNumberOfParticipants):
 def correctDict(df, participantNumber, numOrAct):
 
     numOrAct = {"a": 1, "n": 0}[numOrAct]
-    numberOfRow = (participantNumber-1)*2 + numOrAct
+    numberOfRow = (participantNumber - 1) * 2 + numOrAct
     
     if numOrAct:
         actSequenceAll = {
@@ -52,11 +52,11 @@ def correctDict(df, participantNumber, numOrAct):
         columnConvert = {f"({i}, {j})": f"({actSequence[i]}, {actSequence[j]})" for i in range(1,7) for j in range(1,7) if i<j}
         # print(columnConvert,"\n")
 
-        df = df.rename(columns=columnConvert)
+        df = df.rename(columns = columnConvert)
         # print(df)
         columnConvert2 = {columnConvert[key]: f"({actStandard[columnConvert[key][1]]}, {actStandard[columnConvert[key][4]]})" if actStandard[columnConvert[key][1]]<actStandard[columnConvert[key][4]] else f"({actStandard[columnConvert[key][4]]}, {actStandard[columnConvert[key][1]]})" for key in columnConvert}
         # print(columnConvert2)
-        df = df.rename(columns=columnConvert2)
+        df = df.rename(columns = columnConvert2)
         # print(df)
 
     goodDict = df.iloc[numberOfRow,2:17].to_dict()

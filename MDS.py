@@ -10,7 +10,7 @@ from utils import startToSimilarMatrix, similarityToDissimilarity, startToReadCS
 #Plot the MDS
 def plotMDS(dissimilar, numOrAct):
     
-    mds = MDS(n_components=2, dissimilarity="precomputed", random_state=1)
+    mds = MDS(n_components = 2, dissimilarity = "precomputed", random_state=1)
     pos = mds.fit_transform(dissimilar)
     xs, ys = pos[:, 0], pos[:, 1]
 
@@ -21,8 +21,8 @@ def plotMDS(dissimilar, numOrAct):
         plt.text(x, y, label, fontsize=15, color = 'darkblue')
     plt.show()
 
-#Plot the MDS
-def plotMDSExe(participantNumber, numOrAct, totalParticipant):
+#Plot the MDS of a participant
+def plotPersonalMDS(participantNumber, numOrAct, totalParticipant):
     similar = startToSimilarMatrix(participantNumber, numOrAct, totalParticipant)
     dissimilar = similarityToDissimilarity(similar)
     plotMDS(dissimilar, numOrAct)
@@ -30,7 +30,7 @@ def plotMDSExe(participantNumber, numOrAct, totalParticipant):
 #Plot all the MDS
 def plotMDSonSubPlots(dissimilar, numOrAct, sub):
     
-    mds = MDS(n_components=2, dissimilarity="precomputed", random_state=1)
+    mds = MDS(n_components = 2, dissimilarity = "precomputed", random_state = 1)
     pos = mds.fit_transform(dissimilar)
     xs, ys = pos[:, 0], pos[:, 1]
 
@@ -41,19 +41,18 @@ def plotMDSonSubPlots(dissimilar, numOrAct, sub):
         sub.scatter(x, y, marker='o', color=labelColors[label])
 
     # Plot all the MDS
-def plotAllMDSExe(numOrAct, totalParticipant):
+def plotAllMDS(numOrAct, totalParticipant):
     fig, axs = plt.subplots(nrows=3, ncols=3, figsize=(8, 8))
     for i in range(totalParticipant):
-        participantNumber = i+1
+        participantNumber = i + 1
         df = startToReadCSVAndConvertToFloat(totalParticipant) #number of participants
         upperTriangle = createMatrix(df, participantNumber, numOrAct) #df, participantNumber, numOrAct
         similar = toSimilarityMatrix(upperTriangle)
         dissimilar = similarityToDissimilarity(similar)
-        row = i // 3
-        col = i % 3
+        row, col= i // 3, i % 3
         plotMDSonSubPlots(dissimilar, numOrAct, axs[row, col])
     labelColors = {'L': 'red', 'Q': 'orange', 'S': 'yellow', 'W': 'green', 'R': 'blue', 'J': 'purple'} if numOrAct == "a" else {'1': 'red', '2': 'orange', '3': 'yellow', '4': 'green', '5': 'blue', '6': 'purple'} if numOrAct == "n" else None
-    handles = [plt.Line2D([], [], color=color, marker='o', linestyle='', label=label) for label, color in labelColors.items()]
+    handles = [plt.Line2D([], [], color = color, marker = 'o', linestyle = '', label = label) for label, color in labelColors.items()]
     plt.legend(handles=handles)
     plt.show()
 
@@ -64,5 +63,5 @@ if __name__ == "__main__":
     slowOrFast = "s"
     totalParticipant = 9
     
-    plotMDSExe(participantNumber, numOrAct, totalParticipant)
-    plotAllMDSExe(numOrAct, totalParticipant)
+    plotPersonalMDS(participantNumber, numOrAct, totalParticipant)
+    plotAllMDS(numOrAct, totalParticipant)
