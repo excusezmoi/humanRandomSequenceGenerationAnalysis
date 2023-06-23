@@ -16,37 +16,30 @@ config <- read.ini(configPath, encoding = "UTF-8")
 # print(config)
 
 #read csv file
-dataRandom <- read.csv(config$FILES$rgCalcResultsCSVFile, header = TRUE, sep = ",")
-print(dataRandom)
+rgCalcdata <- read.csv(config$FILES$rgCalcResultsCSVFile, header = TRUE, sep = ",")
+print(rgCalcdata)
 
 #extract (s or f) and (num or act) respectively as two variables 
-speed = c()
-numOrAct = c()
-for (i in dataRandom$type) {
+speed = c(); numOrAct = c()
+for (i in rgCalcdata$type) {
   speed = append(speed, substr(i, 1, 1))
   numOrAct = append(numOrAct, substr(i, 2, 4))
 }
 
+sortedDataR = data.frame(rgCalcdata$subject, speed, numOrAct, rgCalcdata$R)
 
+sortedDataAll = data.frame(rgCalcdata[1], speed, numOrAct, rgCalcdata[,c(4:60)])
 
-dataRandom2 = data.frame(dataRandom$subject, speed, numOrAct, dataRandom$R)
-
-
-dataRandomTry = data.frame(dataRandom[1], speed, numOrAct, dataRandom[,c(4:60)])
-
-colnames(dataRandom2)[1] <- "subject"
-colnames(dataRandom2)[4] <- "R"
-
+colnames(sortedDataR)[1] <- "subject"
+colnames(sortedDataR)[4] <- "R"
 
 #踢掉董
-dataRandom <- subset(dataRandom, subject != "3")
-dataRandom2 <- subset(dataRandom2, subject != "3")
-
-
+rgCalcdata <- subset(rgCalcdata, subject != "3")
+sortedDataR <- subset(sortedDataR, subject != "3")
 
 #art analysis and effect size
-resultRand <- art(R ~ factor(speed)*factor(numOrAct) + Error(factor(subject)), data=dataRandom2)
-result = anova(resultRand)
+resultRand <- art(R ~ factor(speed) * factor(numOrAct) + Error(factor(subject)), data = sortedDataR)
+result <- anova(resultRand)
 print(result, verbose = TRUE)
 
 result$eta.sq.part = with(result, `Sum Sq`/(`Sum Sq` + `Sum Sq.res`))
@@ -55,15 +48,15 @@ result
 
 #Use the non-parametric method to calculate the simple main effects
 #speed
-speedS = subset(dataRandom2, speed == "s")
-speedF = subset(dataRandom2, speed == "f")
+speedS = subset(sortedDataR, speed == "s")
+speedF = subset(sortedDataR, speed == "f")
 speedS = speedS[,c("subject","R")]
 speedF = speedF[,c("subject","R")]
 
 
 #numOrAct
-num = subset(dataRandom2, numOrAct == "num")
-act = subset(dataRandom2, numOrAct == "act")
+num = subset(sortedDataR, numOrAct == "num")
+act = subset(sortedDataR, numOrAct == "act")
 num = num[,c("subject","R")]
 act = act[,c("subject","R")]
 
@@ -96,13 +89,13 @@ numOrAct
 #use wilcoxon test to do multiple comparison
 
 #speed
-multiSpeed = wilcox.test(dataRandom2[dataRandom2$speed == "s",]$R, dataRandom2[dataRandom2$speed == "f",]$R, paired = TRUE)
+multiSpeed = wilcox.test(sortedDataR[sortedDataR$speed == "s",]$R, sortedDataR[sortedDataR$speed == "f",]$R, paired = TRUE)
 multiSpeed
-multiNumOrAct = wilcox.test(dataRandom2[dataRandom2$numOrAct == "num",]$R, dataRandom2[dataRandom2$numOrAct == "act",]$R, paired = TRUE)
+multiNumOrAct = wilcox.test(sortedDataR[sortedDataR$numOrAct == "num",]$R, sortedDataR[sortedDataR$numOrAct == "act",]$R, paired = TRUE)
 multiNumOrAct
 
 #effect size
-effsizeSpeed <- wilcox_effsize(dataRandom2, R ~ speed, paired = TRUE, conf.level = 0.95)
+effsizeSpeed <- wilcox_effsize(sortedDataR, R ~ speed, paired = TRUE, conf.level = 0.95)
 effsizeSpeed
 
 
@@ -112,18 +105,17 @@ library(ggplot2)
 library(plyr)
 
 # Calculate bootstrapped standard errors for each participant
-se_df <- ddply(dataRandom2, .(subject, speed, numOrAct), summarise, se = sd(R)/sqrt(length(R)))
+se_df <- ddply(sortedDataR, .(subject, speed, numOrAct), summarise, se = sd(R)/sqrt(length(R)))
 se_df$se[is.na(se_df$se)] <- 0  # Replace NAs with zeros
 
 # Merge the standard error data with the original data
-dataRandom2 <- merge(dataRandom2, se_df, by = c("subject", "speed", "numOrAct"))
+sortedDataR <- merge(sortedDataR, se_df, by = c("subject", "speed", "numOrAct"))
 
 # Plot the data with error bars
-ggplot(dataRandom2, aes(x = numOrAct, y = R, color = speed, group = interaction(speed, subject))) +
+ggplot(sortedDataR, aes(x = numOrAct, y = R, color = speed, group = interaction(speed, subject))) +
   geom_point(size = 3, position = position_dodge(width = 0.8)) +
   geom_errorbar(aes(ymin = R - se, ymax = R + se), position = position_dodge(width = 0.8), width = 0.2) +
   facet_wrap(~subject, scales = "free") +
   labs(x = "numOrAct", y = "R", color = "speed") +
   theme_classic() +
   theme(legend.position = "bottom")
-
