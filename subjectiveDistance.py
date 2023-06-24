@@ -7,15 +7,18 @@ import numpy as np
 from utils import configFilePath, startToReadCSVAndConvertToFloat, readResponseTxtFile, correctDict
 
 #calculate the average distance of true random sequence and the generated sequence 
-def averageLengthBetweenResponses(df, response, length, goodDict):
 
+def randomSubjectiveDistance(df, goodDict):
     #random distance: the average distance of the truly random responses according 
     # to their subjective similarity ratings
     responseDict = goodDict
     randomDistanceS = (sum(responseDict.values()) + 3) / 18
     randomDistance = 1 - randomDistanceS
+    return randomDistance
 
+def actualSequenceSubjectiveDistance(df, response, length, goodDict):
     #average distance: the actual average distance of the generated random sequences
+    responseDict = goodDict
     distanceSumS = 0
     for i, element in enumerate(response):
         if i:
@@ -24,8 +27,7 @@ def averageLengthBetweenResponses(df, response, length, goodDict):
     
     averageDistanceS = distanceSumS / (length - 1)
     averageDistance = 1 - averageDistanceS
-
-    return randomDistance, averageDistance
+    return averageDistance
 
 def printSubjectiveDistanceExe(participantNumber, numOrAct, slowOrFast, totalParticipant, fileFolder):
     #Read the txt file
@@ -37,7 +39,8 @@ def printSubjectiveDistanceExe(participantNumber, numOrAct, slowOrFast, totalPar
     print(response, length)
     df = startToReadCSVAndConvertToFloat(totalParticipant)
     df, dictGood = correctDict(df, participantNumber, numOrAct)
-    randomDistance, averageDistance = averageLengthBetweenResponses(df, response, length, dictGood)
+    randomDistance = randomSubjectiveDistance(df, dictGood)
+    averageDistance = actualSequenceSubjectiveDistance(df, response, length, dictGood)
     print("the average subjective distance if the sequence is random:", randomDistance, 
           "\nthe average actual distance from their random sequence:", averageDistance)
 
