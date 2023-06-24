@@ -25,7 +25,7 @@ def clusteringElbowMethodExe(numOrAct, totalParticipant):
     data_2d = data.reshape((n_samples, n_features * n_features))
     
     # Define range of cluster numbers to try
-    cluster_range = range(1, 10)
+    cluster_range = range(1, totalParticipant + 1)
 
     # Calculate WCSS for each cluster number
     wcss = []
