@@ -1,7 +1,7 @@
 import numpy as np
 import csv
 
-from utils import readResponseTxtFile, configFilePath
+from utils import readResponseTxtFile, configFilePath, responseFileReadingdecorator
 
 class MarkovChain:
     def __init__(self, txtFile, lengthTXTFile, participant, condition):
@@ -42,25 +42,10 @@ class MarkovChain:
     def calculateAverageObjectiveDistance(self):
         self.averageObjectiveDistance = np.sum(self.MarkovMatrixWithWeighting) / (self.lengthTXTFile - 1)
 
-def MarkovChainExe(participant, condition, totalParticipant, txtFileFolder):
-
-    txtFileName = "/p" + str(participant) + f" {condition}.txt"
-    txtFilePath = txtFileFolder + txtFileName
-
-    txtFile, lengthTXTFile = readResponseTxtFile(txtFilePath)
-
+@responseFileReadingdecorator
+def createMarkovChain(participant, condition, totalParticipant, txtFile, lengthTXTFile):
     markov = MarkovChain(txtFile, lengthTXTFile, participant, condition)
-
     return markov
-
-def MarkovChainExeAll(totalParticipant, txtFileFolder):
-
-    markovList = []
-    for participant in range(1, totalParticipant + 1):
-        for condition in ["snum", "fnum"]:
-            markovList.append(MarkovChainExe(participant, condition, totalParticipant, txtFileFolder))
-
-    return markovList
 
 class MarkovChainAll:
     def __init__(self, totalParticipant, txtFileFolder):
@@ -70,7 +55,7 @@ class MarkovChainAll:
         for participant in range(1, self.totalParticipant + 1):
             setattr(self, "p" + str(participant), MarkovChain)
             for condition in ["snum", "fnum"]:
-                setattr(getattr(self, "p" + str(participant)), condition, MarkovChainExe(participant, condition, self.totalParticipant, self.txtFileFolder))
+                setattr(getattr(self, "p" + str(participant)), condition, createMarkovChain(participant, condition, self.totalParticipant, self.txtFileFolder))
 
 
 if __name__ == "__main__":

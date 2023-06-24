@@ -148,3 +148,15 @@ def readResponseTxtFile(filePath):
         lines = f.readline().strip()
         response = list(lines)
     return response, len(response) #response is a list with the form ['2', '1', '3']
+
+def responseFileReadingdecorator(func):
+    def wrapper(participant, condition, totalParticipant, txtFileFolder):
+        txtFileName = "/p" + str(participant) + f" {condition}.txt"
+        txtFilePath = txtFileFolder + txtFileName
+
+        txtFile, lengthTXTFile = readResponseTxtFile(txtFilePath)
+
+        return func(participant, condition, totalParticipant, txtFile, lengthTXTFile)
+
+    return wrapper
+
