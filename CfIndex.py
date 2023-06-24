@@ -1,8 +1,8 @@
 from collections import Counter
 
-from utils import configFilePath, readResponseTxtFile
+from utils import configFilePath, responseFileReadingDecorator
 
-
+@responseFileReadingDecorator
 def CfIndex(li):
     def elementPlacing(li):
         dic = {}
@@ -19,25 +19,20 @@ def CfIndex(li):
 
     def sumOccurences(countdict, le):
         return sum(countdict.values()) / le
+    
     return sumOccurences(countInstances(intervalCalc(elementPlacing(li))),len(li))
 
-#read file and calculate CfIndex
-def CfIndexExe(participantNumber, numOrAct, slowOrFast, totalParticipant, fileFolder):
-    
-    #Read the txt file
-    fileName = f'/p{participantNumber} {slowOrFast}{"act" if numOrAct == "a" else "num" if numOrAct == "n" else None}.txt'
-    filePath = fileFolder + fileName
-
-    response, _length = readResponseTxtFile(filePath)
-
-    return CfIndex(response)
-    
 if __name__ == "__main__":
 
-    participantNumber = 7
+    participantNumber = 4
     numOrAct = "n"
     slowOrFast = "f"
     totalParticipant = 9
-    fileFolder = configFilePath("FOLDER", "responseFileFolder")
+    txtFileFolder = configFilePath("FOLDER", "responseFileFolder")
     
-    print(CfIndexExe(participantNumber, numOrAct, slowOrFast, totalParticipant, fileFolder))
+    # print(CfIndexExe(participantNumber, numOrAct, slowOrFast, totalParticipant, txtFileFolder))
+    print(CfIndex(participantNumber = participantNumber, 
+                        numOrAct = numOrAct, 
+                        slowOrFast = slowOrFast, 
+                        totalParticipant = totalParticipant, 
+                        txtFileFolder = txtFileFolder))

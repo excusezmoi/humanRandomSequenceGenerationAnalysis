@@ -161,15 +161,29 @@ def readResponseTxtFile(filePath):
 #     return wrapper
 
 def responseFileReadingDecorator(func):
-    def wrapper(*args):
-        participantNumber, condition, totalParticipant, txtFileFolder = args[:4]
+    def wrapper(**kwargs):
 
-        txtFileName = "/p" + str(participantNumber) + f" {condition}.txt"
-        txtFilePath = txtFileFolder + txtFileName
+        if "condition" in kwargs:
+            participantNumber, condition, totalParticipant, txtFileFolder = kwargs["participantNumber"], kwargs["condition"], kwargs["totalParticipant"], kwargs["txtFileFolder"]
 
-        txtFile, lengthTXTFile = readResponseTxtFile(txtFilePath)
-        args = args[:3]
-        return func(*args, txtFile, lengthTXTFile)
+            txtFileName = "/p" + str(participantNumber) + f" {condition}.txt"
+            txtFilePath = txtFileFolder + txtFileName
+
+            txtFile, lengthTXTFile = readResponseTxtFile(txtFilePath)
+
+            return func(participantNumber, condition, txtFile, lengthTXTFile)
+    
+        elif "numOrAct" in kwargs and "slowOrFast" in kwargs:
+            participantNumber, numOrAct, slowOrFast, txtFileFolder = kwargs["participantNumber"], kwargs["numOrAct"], kwargs["slowOrFast"], kwargs["txtFileFolder"]
+            
+            #Read the txt file
+            fileName = f'/p{participantNumber} {slowOrFast}{"act" if numOrAct == "a" else "num" if numOrAct == "n" else None}.txt'
+            filePath = txtFileFolder + fileName
+
+            txtFile, _length = readResponseTxtFile(filePath)
+
+            return func(txtFile)
+    
 
     return wrapper
 
