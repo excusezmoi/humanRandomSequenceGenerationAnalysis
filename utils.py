@@ -149,42 +149,25 @@ def readResponseTxtFile(filePath):
         response = list(lines)
     return response, len(response) #response is a list with the form ['2', '1', '3']
 
-# def responseFileReadingDecorator(func):
-#     def wrapper(participantNumber, condition, totalParticipant, txtFileFolder):
-#         txtFileName = "/p" + str(participantNumber) + f" {condition}.txt"
-#         txtFilePath = txtFileFolder + txtFileName
-
-#         txtFile, lengthTXTFile = readResponseTxtFile(txtFilePath)
-
-#         return func(participantNumber, condition, totalParticipant, txtFile, lengthTXTFile)
-
-#     return wrapper
-
 def responseFileReadingDecorator(func):
     def wrapper(**kwargs):
 
         if "condition" in kwargs:
-            participantNumber, condition, totalParticipant, txtFileFolder = kwargs["participantNumber"], kwargs["condition"], kwargs["totalParticipant"], kwargs["txtFileFolder"]
+            participantNumber, condition, txtFileFolder = kwargs["participantNumber"], kwargs["condition"], kwargs["txtFileFolder"]
 
             txtFileName = "/p" + str(participantNumber) + f" {condition}.txt"
-            txtFilePath = txtFileFolder + txtFileName
-
-            txtFile, lengthTXTFile = readResponseTxtFile(txtFilePath)
-
-            return func(participantNumber, condition, txtFile, lengthTXTFile)
     
         elif "numOrAct" in kwargs and "slowOrFast" in kwargs:
             participantNumber, numOrAct, slowOrFast, txtFileFolder = kwargs["participantNumber"], kwargs["numOrAct"], kwargs["slowOrFast"], kwargs["txtFileFolder"]
             
             #Read the txt file
-            fileName = f'/p{participantNumber} {slowOrFast}{"act" if numOrAct == "a" else "num" if numOrAct == "n" else None}.txt'
-            filePath = txtFileFolder + fileName
+            txtFileName = f'/p{participantNumber} {slowOrFast}{"act" if numOrAct == "a" else "num" if numOrAct == "n" else None}.txt'
+        
+        filePath = txtFileFolder + txtFileName
+        txtFile, _length = readResponseTxtFile(filePath)
 
-            txtFile, _length = readResponseTxtFile(filePath)
-
-            return func(txtFile)
+        return func(txtFile)
     
-
     return wrapper
 
 
