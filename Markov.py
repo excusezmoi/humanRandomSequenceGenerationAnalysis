@@ -1,7 +1,7 @@
 import numpy as np
 import csv
 
-from utils import readResponseTxtFile, configFilePath, responseFileReadingdecorator
+from utils import readResponseTxtFile, configFilePath, responseFileReadingDecorator
 
 class MarkovChain:
     def __init__(self, txtFile, lengthTXTFile, participant, condition):
@@ -42,7 +42,7 @@ class MarkovChain:
     def calculateAverageObjectiveDistance(self):
         self.averageObjectiveDistance = np.sum(self.MarkovMatrixWithWeighting) / (self.lengthTXTFile - 1)
 
-@responseFileReadingdecorator
+@responseFileReadingDecorator
 def createMarkovChain(participant, condition, totalParticipant, txtFile, lengthTXTFile):
     markov = MarkovChain(txtFile, lengthTXTFile, participant, condition)
     return markov
