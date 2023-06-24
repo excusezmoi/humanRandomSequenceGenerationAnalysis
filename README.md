@@ -25,7 +25,7 @@ Containing the essential functions to process the data. These functions are call
 
 #### MDS.py
 
-Perform MDS analysis on the subjective similarity data. The outputs are 2D plots of the data.
+Perform MDS analysis on the subjective similarity data. The MDSPlotter class has two main functions, the first one plotting the individual MDS according to the given parameters, and the second one plotting the MDS plots of all participants given the parameters.
 
 #### cluster.py (failed)
 
@@ -39,7 +39,9 @@ Calculate the correlation of the subjective similarity matrices between two part
 
 #### Markov.py
 
-**Show the Markov matrix of the "number" condition** of each participant. And also the weighted Markov matrix, which considers the objective distance between the numbers.
+**Show the Markov matrix of the "number" condition** of each participant. And also the weighted Markov matrix, which considers the objective distance between the numbers. The objective distance is also provided.
+
+The MarkovChainAll class has the attribute of participant, such as p1, p2. And the respective participant attribute has the condition attribute, such as snum, fact. The respective condition attribute is a MarkovChain class object, which has the attribute of Markov matrix, Weighted Markov matrix, and the average objective difference. 
 
 #### subjectiveDistance.py
 
