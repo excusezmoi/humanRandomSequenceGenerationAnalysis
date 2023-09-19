@@ -5,13 +5,13 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.manifold import MDS
 
-from utils import startToSimilarMatrix, similarityToDissimilarity, startToReadCSVAndConvertToFloat, createMatrix, toSimilarityMatrix
+from utils import startToSimilarMatrix2, startToReadCSVAndConvertToFloat2, createMatrix2, similarityToDissimilarity, toSimilarityMatrix
 
-class MDSPlotter:
+class MDSPlotter2:
     def __init__(self, numOrAct, totalParticipant):
         self.numOrAct = numOrAct
         self.totalParticipant = totalParticipant
-        self.df = startToReadCSVAndConvertToFloat(totalParticipant)
+        self.df = startToReadCSVAndConvertToFloat2(totalParticipant, numOrAct)
         # self.similar = startToSimilarMatrix(participantNumber, numOrAct, totalParticipant)
         # self.dissimilar = similarityToDissimilarity(self.similar)
 
@@ -28,7 +28,7 @@ class MDSPlotter:
         plt.show()
 
     def plotPersonalMDS(self, participantNumber):
-        similar = startToSimilarMatrix(participantNumber, self.numOrAct, self.totalParticipant)
+        similar = startToSimilarMatrix2(participantNumber, self.numOrAct, self.totalParticipant)
         dissimilar = similarityToDissimilarity(similar)
         self.plotMDS(dissimilar)
 
@@ -44,14 +44,15 @@ class MDSPlotter:
             sub.scatter(x, y, marker='o', color=labelColors[label])
 
     def plotAllMDS(self):
-        fig, axs = plt.subplots(nrows=3, ncols=3, figsize=(8, 8))
+        sideNumber = (lambda x: int(x**0.5) if x**0.5 == int(x**0.5) else int(x**0.5) + 1)(self.totalParticipant)
+        fig, axs = plt.subplots(nrows=sideNumber, ncols=sideNumber, figsize=(8, 8))
         for i in range(self.totalParticipant):
             participantNumber = i + 1
-            df = startToReadCSVAndConvertToFloat(self.totalParticipant)
-            upperTriangle = createMatrix(df, participantNumber, self.numOrAct)
+            df = startToReadCSVAndConvertToFloat2(self.totalParticipant, self.numOrAct)
+            upperTriangle = createMatrix2(df, participantNumber, self.numOrAct)
             similar = toSimilarityMatrix(upperTriangle)
             dissimilar = similarityToDissimilarity(similar)
-            row, col= i // 3, i % 3
+            row, col= i // sideNumber, i % sideNumber
             self.plotMDSonSubPlots(dissimilar, axs[row, col])
         labelColors = {'L': 'red', 'Q': 'orange', 'S': 'yellow', 'W': 'green', 'R': 'blue', 'J': 'purple'} if self.numOrAct == "a" else {'1': 'red', '2': 'orange', '3': 'yellow', '4': 'green', '5': 'blue', '6': 'purple'} if self.numOrAct == "n" else None
         handles = [plt.Line2D([], [], color=color, marker='o', linestyle='None', label=label) for label, color in labelColors.items()]
@@ -60,10 +61,10 @@ class MDSPlotter:
 
 if __name__ == "__main__":
     
-    participantNumber = 5
+    participantNumber = 20
     numOrAct = "n"
-    totalParticipant = 9
+    totalParticipant = 24
 
-    mds = MDSPlotter(numOrAct, totalParticipant)
+    mds = MDSPlotter2(numOrAct, totalParticipant)
     mds.plotPersonalMDS(participantNumber)
     mds.plotAllMDS()

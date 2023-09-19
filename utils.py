@@ -29,12 +29,6 @@ def convertValuesToFloat(df, currentNumberOfParticipants):
     print(df)
     return df
 
-# def convertValuesToFloat2(df, currentNumberOfParticipants, numOrAct):
-#     startColumn = {"a": 3, "n": 2}[numOrAct]
-#     df.iloc[0:currentNumberOfParticipants*2,startColumn:17] = df.iloc[0:currentNumberOfParticipants*2,startColumn:17].astype(int)/1000
-#     print(df)
-#     return df
-
 #Integrate the above two functions
 def startToReadCSVAndConvertToFloat(currentNumberOfParticipants):
     df = readCSVFile()
@@ -117,14 +111,21 @@ def createMatrix(df, participantNumber, numOrAct):
 
 def createMatrix2(df, participantNumber, numOrAct):
 
-    numberOfRow = participantNumber
+    numOrAct = {"a": 1, "n": 0}[numOrAct]
+    numberOfRow = participantNumber - 1
+
+    as1 = {1:"l",2:"q",3:"s",4:"w",5:"r",6:"j"}
 
     upperTriangle = np.zeros((6,6))
 
-    for i in range(1,7):
-        for j in range(1,7):
-            if i<j:
-                upperTriangle[i-1,j-1] = df.loc[numberOfRow,f"({i}, {j})"]
+    # for i in range(1,7):
+    #     for j in range(1,7):
+    #         if i<j:
+    #             upperTriangle[i-1,j-1] = df.loc[numberOfRow,f"({i}, {j})"]
+                # np.put(upperTriangle, [(i-1) * 6 + (j-1)], df.loc[numberOfRow,f"({i}, {j})"])
+
+    [np.put(upperTriangle, [(i-1) * 6 + (j-1)], df.loc[numberOfRow,f"({i}, {j})"]) if not numOrAct else np.put(upperTriangle, [(i-1) * 6 + (j-1)], df.loc[numberOfRow,f"({as1[i]}, {as1[j]})"]) for i in range(1,7) for j in range(1,7) if i<j]
+
     print(upperTriangle)
     return upperTriangle
 
@@ -169,7 +170,7 @@ def startToSimilarMatrix(participantNumber, numOrAct, totalParticipant):
 
 def startToSimilarMatrix2(participantNumber, numOrAct, totalParticipant):
     df = startToReadCSVAndConvertToFloat2(totalParticipant, numOrAct) #number of participants
-    upperTriangle = createMatrix(df, participantNumber, numOrAct) #df, participantNumber, numOrAct
+    upperTriangle = createMatrix2(df, participantNumber, numOrAct) #df, participantNumber, numOrAct
     plotMatrix(upperTriangle, numOrAct)
     similar = toSimilarityMatrix(upperTriangle)
     return similar
