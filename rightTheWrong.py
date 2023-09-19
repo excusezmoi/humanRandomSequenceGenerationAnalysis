@@ -1,5 +1,6 @@
 from utils import configFilePath, readCSVFile, correctDict
 import pandas as pd
+import itertools
 
 originalFile = readCSVFile()
 # print(originalFile)
@@ -44,9 +45,24 @@ for participantNumber in range(1, 25):
 
 bigDf = pd.concat(bigList)
 
+print(renameColumn)
+
+actComb = list(itertools.combinations('lqswrj', 2))
+# print(actComb)
+columnOrder = {comb: ind for ind, comb in enumerate(actComb)}
+
+formattedColumnOrder = {f'({key[0]}, {key[1]})': value for key, value in columnOrder.items()}
+
+
+bigDf = bigDf[formattedColumnOrder.keys()]
+
 print(bigDf)
 
-bigDf.to_csv(configFilePath("FILES", "subjectiveActionFile"), index=False)
+# bigDf.to_csv(configFilePath("FILES", "subjectiveActionFile"), index=False)
+# 
+# df2 = originalFile[originalFile["numberOrAction"] == "n"]
+# df2.to_csv(configFilePath("FILES", "subjectiveNumberFile"), index=False)
+
 
 # for participantNumber in range(1, 25):
 #     print(participantNumber)
