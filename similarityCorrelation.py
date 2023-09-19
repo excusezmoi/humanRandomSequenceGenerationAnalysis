@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 
-from utils import startToSimilarMatrix
+from utils import startToSimilarMatrix2
 
 #Calculate the correlation of two similarity matrices
 def corOfMatrices(similarityMatrix1, similarityMatrix2):
@@ -12,8 +12,8 @@ def corOfMatrices(similarityMatrix1, similarityMatrix2):
 
 #similarity matrix correlation
 def corOfSimilarityMatrices(numOrAct,participantNumber1, participantNumber2, totalParticipant):
-    similar1 = startToSimilarMatrix(participantNumber1, numOrAct, totalParticipant)
-    similar2 = startToSimilarMatrix(participantNumber2, numOrAct, totalParticipant)
+    similar1 = startToSimilarMatrix2(participantNumber1, numOrAct, totalParticipant)
+    similar2 = startToSimilarMatrix2(participantNumber2, numOrAct, totalParticipant)
     return corOfMatrices(similar1, similar2)
 
 if __name__ == "__main__":
