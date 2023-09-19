@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.cluster import KMeans
 
-from utils import startToSimilarMatrix, startToReadCSVAndConvertToFloat, createMatrix, toSimilarityMatrix
+from utils import startToSimilarMatrix2, startToReadCSVAndConvertToFloat2, createMatrix2, toSimilarityMatrix
 
 def clusteringElbowMethodExe(numOrAct, totalParticipant):
     #kmeans clustering of subjective similarity matrices
@@ -14,7 +14,7 @@ def clusteringElbowMethodExe(numOrAct, totalParticipant):
 
     for i in range(totalParticipant):
         participantNumber = i + 1
-        similarityMatrixAll.append(startToSimilarMatrix(participantNumber, numOrAct, totalParticipant))
+        similarityMatrixAll.append(startToSimilarMatrix2(participantNumber, numOrAct, totalParticipant))
 
     # create a numpy array to store the similarity matrices
     similarity_matrix_array = np.array(similarityMatrixAll)
@@ -40,15 +40,14 @@ def clusteringElbowMethodExe(numOrAct, totalParticipant):
     plt.ylabel('WCSS action')
     plt.show()
 
-#clustering analysis no need: sad
 def clusteringAnalysisExe(numOrAct, totalParticipant, numOfClusters):
     #kmeans clustering of subjective similarity matrices  
     similarityMatrixAll = []
 
     for i in range(totalParticipant):
         participantNumber = i+1
-        df = startToReadCSVAndConvertToFloat(totalParticipant) #number of participants
-        upperTriangle = createMatrix(df, participantNumber, numOrAct) #df, participantNumber, numOrAct
+        df = startToReadCSVAndConvertToFloat2(totalParticipant, numOrAct) #number of participants
+        upperTriangle = createMatrix2(df, participantNumber, numOrAct) #df, participantNumber, numOrAct
         # plotMatrix(upperTriangle, numOrAct)
         similarityMatrixAll.append(toSimilarityMatrix(upperTriangle))
 
@@ -70,7 +69,7 @@ def clusteringAnalysisExe(numOrAct, totalParticipant, numOfClusters):
 if __name__ == "__main__":
     
     numOrAct = "a"
-    totalParticipant = 9
+    totalParticipant = 24
     numOfClusters = 3
 
     clusteringElbowMethodExe(numOrAct, totalParticipant)
