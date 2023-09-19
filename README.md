@@ -93,5 +93,9 @@ The objective distance is also plotted in the number condition.
 
 # To Be Done
 
-- ~~read the paper that says only two indices needed to be tested~~
 - how is the similarity of the phonetics of the numbers or actions related to the subjective similarity?
+
+- use the Academia Sinica 平衡語料庫 https://asbc.iis.sinica.edu.tw/
+
+- Analysis with 筠潔's suggestion: gap analysis
+
