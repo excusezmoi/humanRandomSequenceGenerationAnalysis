@@ -73,6 +73,16 @@ def correctDict(df, participantNumber, numOrAct):
     print(goodDict)
     return df, goodDict
 
+def correctDict2(df, participantNumber):
+
+    numberOfRow = participantNumber - 1
+    goodDict = df.iloc[numberOfRow,2:17].to_dict()
+    print(goodDict)
+    return df, goodDict
+
+# df = startToReadCSVAndConvertToFloat2(24, "a")
+# correctDict2(df, 15)
+
 def createMatrix(df, participantNumber, numOrAct):
 
     numOrAct = {"a": 1, "n": 0}[numOrAct]
@@ -182,10 +192,17 @@ def similarityToDissimilarity(similarityMatrix):
 
 #read the random generated response from txt file
 def readResponseTxtFile(filePath):
-    with open(filePath, 'r') as f:
+    with open(filePath, 'r', encoding="utf-8") as f:
         lines = f.readline().strip()
         response = list(lines)
+        cCharDict = {"躺": "1","蹲": "2","坐": "3","走": "4","跑": "5","跳": "6"}
+        eCharDict = {"l": "1","q": "2","s": "3","w": "4","r": "5","j": "6"}
+        if response[0] in cCharDict: response = list(map(lambda x: cCharDict[x],response))
+        elif response[0] in eCharDict: response = list(map(lambda x: eCharDict[x],response))
+
     return response, len(response) #response is a list with the form ['2', '1', '3']
+
+print(*readResponseTxtFile("W:\Me\Research\心理\\randomGeneration\experimentResults\collected\數字動作\文字檔\p17 sact.txt"))
 
 def responseFileReadingDecorator(func):
     def wrapper(**kwargs):

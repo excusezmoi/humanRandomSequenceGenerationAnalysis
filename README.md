@@ -91,6 +91,12 @@ Plot the expected subjective distance and the actual subjective distance of the 
 
 The objective distance is also plotted in the number condition.
 
+## Functional File
+
+### rightTheWrong.py
+
+This file contains some miscellaneous functions for a single use to convert the file to desirable format etc.
+
 # To Be Done
 
 - how is the similarity of the phonetics of the numbers or actions related to the subjective similarity?
