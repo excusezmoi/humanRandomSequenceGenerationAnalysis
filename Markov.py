@@ -60,14 +60,14 @@ class MarkovChainAll:
 
 if __name__ == "__main__":
     
-    totalParticipant = 9
+    totalParticipant = 24
     txtFileFolder = configFilePath("FOLDER","responseFileFolder")
 
     theAnswer = MarkovChainAll(totalParticipant, txtFileFolder)
-    # theAnswer.p1 contains the two attributes that are MarkovChain objects for participant 1:
+    # theAnswer.p1 contains two attributes that are MarkovChain objects for participant 1:
     # theAnswer.p1.snum and theAnswer.p1.fnum
 
-    print(theAnswer.p1)
-    print(theAnswer.p1.snum.averageObjectiveDistance)
-    print(theAnswer.p3.fnum.averageObjectiveDistance)
-    print(theAnswer.p9.snum.MarkovMatrixWithWeighting)
+    print(theAnswer.p17)
+    print(theAnswer.p17.snum.averageObjectiveDistance)
+    print(theAnswer.p20.fnum.averageObjectiveDistance)
+    print(theAnswer.p20.snum.MarkovMatrixWithWeighting)
