@@ -7,20 +7,23 @@ library(ini)
 library(rstudioapi)
 library(stringr)
 
+totalParticipants = 24
+
 # Read the config file
 currentFolder <- str_sub(getSourceEditorContext()$path, 1, -27) # -27 to remove the file name
 configPath <- paste(currentFolder, "/config.ini", sep = "")
 config <- read.ini(configPath, encoding = "UTF-8")
 
 # Access and print the values
-# print(config)
+print(config)
 
 #read xlsx file
 data = openxlsx::read.xlsx(config$FILES$distanceDataXLSXFile)
-data = data[1:9,]
+data = data[1:totalParticipants,]
 
 #踢人
 data <- subset(data, subjectNumber != "3")
+# 可能要踢王俊佑
 
 
 sdData <- gather(data = data, key = types, value = distance, expectedAverageNumDistance,	sNumDistance,	fNumDistance,	expectedAverageActDistance,	sActDistance,	fActDistance)
@@ -30,7 +33,7 @@ sdData$distance = as.numeric(sdData$distance)
 class(sdData$distance)
 
 
-# One-way repeated measures ANOVA all
+# One-way repeated measures ANOVA all: significant
 anova_result <- sdData %>% anova_test(distance ~ types + Error(subjectNumber/types))
 
 anova_result
@@ -74,21 +77,21 @@ ggplot(means, aes(x = types, y = distance)) +
 anova_result_num <- sdDataNum %>% anova_test(distance ~ types + Error(subjectNumber/types))
 
 # Perform pairwise t-tests and adjust for multiple comparisons using the Holm method
-posthoc_results <- sdDataNum %>% 
+posthoc_results_num <- sdDataNum %>% 
   pairwise_t_test(distance ~ types, 
                   paired = TRUE,
                   p.adjust.method = "holm")
 
 # View the pairwise comparison results
-posthoc_results
+posthoc_results_num
+# significant for average VS f and average VS s
 
 
 
 
 
 
-
-#One-way in act: not significant
+#One-way in act: significant!
 sdDataAct <- gather(data = data, key = types, value = distance, expectedAverageActDistance,	sActDistance,	fActDistance)
 sdDataAct$distance = as.numeric(sdDataAct$distance)
 sdDataAct = sdDataAct[,c("subjectNumber","types","distance")]
@@ -117,6 +120,27 @@ ggplot(means, aes(x = types, y = distance)) +
   theme_classic()
 
 
+# Perform one-way repeated measures ANOVA on the data
+anova_result_act <- sdDataAct %>% anova_test(distance ~ types + Error(subjectNumber/types))
+
+# Perform pairwise t-tests and adjust for multiple comparisons using the Holm method
+posthoc_results_act <- sdDataAct %>% 
+  pairwise_t_test(distance ~ types, 
+                  paired = TRUE,
+                  p.adjust.method = "holm")
+
+# View the pairwise comparison results
+posthoc_results_act
+# significant for f VS s
+
+
+
+
+
+
+
+
+
 
 #realdata: not a good idea
 realData <- gather(data = data, key = realTypes, value = realDistance, mu, sNumPrac, fNumPrac)
@@ -131,17 +155,17 @@ realData <- subset(realData, subjectNumber != "3")
 anovaRealResult <- realData %>% anova_test(realDistance ~ realTypes + Error(subjectNumber/realTypes))
 anovaRealResult
 
-#t-test between mu and sNumPrac
+#t-test between mu and sNumPrac: not sig
 t.test(data$sNumPrac, mu = 1.9444444)
 cohen.d(data$sNumPrac, mu = 1.9444444, f=NA)
 
-#t-test between mu and fNumPrac
+#t-test between mu and fNumPrac: not sig
 t.test(data$fNumPrac, mu = 1.9444444)
 cohen.d(data$fNumPrac, f = NA, mu = 1.9444444)
 
-#t-test between sNumPrac and fNumPrac
+#t-test between sNumPrac and fNumPrac: sig
 t.test(data$sNumPrac, data$fNumPrac, paired = TRUE)
-#cohensD(data$sNumPrac, data$fNumPrac)
+#cohensD(data$sNumPrac, data$fNumPrac): medium to large
 cohen.d(data$sNumPrac, data$fNumPrac, paired = TRUE)
 
 
@@ -169,3 +193,13 @@ ggplot(means, aes(x = realTypes, y = realDistance)) +
   
   labs(x = "realTypes", y = "realDistance") +
   theme_classic()
+
+
+
+
+
+
+
+# correlation between subjective distance and objective distance in number conditions
+cor(data$sNumDistance, data$sNumPrac)
+cor(data$fNumDistance, data$fNumPrac)
