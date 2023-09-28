@@ -202,7 +202,7 @@ def readResponseTxtFile(filePath):
 
     return response, len(response) #response is a list with the form ['2', '1', '3']
 
-print(*readResponseTxtFile("W:\Me\Research\心理\\randomGeneration\experimentResults\collected\數字動作\文字檔\p17 sact.txt"))
+# print(*readResponseTxtFile("W:\Me\Research\心理\\randomGeneration\experimentResults\collected\數字動作\文字檔\p17 sact.txt"))
 
 def responseFileReadingDecorator(func):
     def wrapper(**kwargs):
