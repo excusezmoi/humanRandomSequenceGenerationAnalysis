@@ -7,7 +7,7 @@ from sklearn.manifold import MDS
 
 from utils import startToSimilarMatrix2, startToReadCSVAndConvertToFloat2, createMatrix2, similarityToDissimilarity, toSimilarityMatrix
 
-class MDSPlotter2:
+class MDSPlotter:
     def __init__(self, numOrAct, totalParticipant):
         self.numOrAct = numOrAct
         self.totalParticipant = totalParticipant
@@ -65,6 +65,6 @@ if __name__ == "__main__":
     numOrAct = "n"
     totalParticipant = 24
 
-    mds = MDSPlotter2(numOrAct, totalParticipant)
+    mds = MDSPlotter(numOrAct, totalParticipant)
     mds.plotPersonalMDS(participantNumber)
     mds.plotAllMDS()
