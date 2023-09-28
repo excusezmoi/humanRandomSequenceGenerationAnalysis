@@ -44,18 +44,25 @@ class MarkovChain:
 def createMarkovChain(txtFile):
     return MarkovChain(txtFile)
 
+class Participant:
+    pass
+
 class MarkovChainAll:
     def __init__(self, totalParticipant, txtFileFolder):
         self.totalParticipant = totalParticipant
         self.txtFileFolder = txtFileFolder
 
         for participant in range(1, self.totalParticipant + 1):
-            setattr(self, "p" + str(participant), MarkovChain)
+            # print(participant)
+            setattr(self, "p" + str(participant), Participant()) #set the attribute of the class MarkovChainAll to be MarkovChain, with the name being p1, p2, p3, etc.
             for condition in ["snum", "fnum"]:
-                setattr(getattr(self, "p" + str(participant)), condition, 
+
+                setattr(getattr(self, "p" + str(participant)), 
+                        str(condition), 
                         createMarkovChain(participantNumber = participant, 
                                           condition = condition,  
                                           txtFileFolder = self.txtFileFolder))
+                # print(getattr(getattr(getattr(self, "p" + str(participant)), str(condition)),"txtFile"))
 
 
 if __name__ == "__main__":
@@ -67,7 +74,25 @@ if __name__ == "__main__":
     # theAnswer.p1 contains two attributes that are MarkovChain objects for participant 1:
     # theAnswer.p1.snum and theAnswer.p1.fnum
 
-    print(theAnswer.p17)
-    print(theAnswer.p17.snum.averageObjectiveDistance)
-    print(theAnswer.p20.fnum.averageObjectiveDistance)
-    print(theAnswer.p20.snum.MarkovMatrixWithWeighting)
+    print(1, theAnswer.p1.snum.averageObjectiveDistance)
+    print(1, theAnswer.p1.fnum.averageObjectiveDistance)
+
+    # print(theAnswer.p1.snum.txtFile == theAnswer.p2.snum.txtFile)
+    # print(theAnswer.p1 == theAnswer.p2)
+
+
+    # print(theAnswer.p17.snum.averageObjectiveDistance)
+    # print(theAnswer.p20.fnum.averageObjectiveDistance)
+    # print(theAnswer.p20.snum.MarkovMatrixWithWeighting)
+
+    # participant = 17
+    # condition = "snum"
+    # pp17 = createMarkovChain(participantNumber = participant, 
+    #                                       condition = condition,  
+    #                                       txtFileFolder = txtFileFolder)
+    # print(pp17.txtFile)
+
+
+
+    # a = MarkovChain
+    # print(a.txtFile)
