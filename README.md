@@ -39,9 +39,9 @@ Calculate the correlation of the subjective similarity matrices between two part
 
 #### Markov.py
 
-**Show the Markov matrix of the "number" condition** of each participant. And also the weighted Markov matrix, which considers the objective distance between the numbers. The objective distance is also provided.
+Show the Markov matrix of each condition of each participant. And also the weighted Markov matrix, which considers the objective distance between the numbers. The objective distance is also provided. **Note that the weighted Markov matrix and objective distance are only applicable to the number conditions.**
 
-The MarkovChainAll class has the attribute of participant, such as p1, p2. And the respective participant attribute has the condition attribute, such as snum, fact. The respective condition attribute is a MarkovChain class object, which has the attribute of Markov matrix, Weighted Markov matrix, and the average objective difference. 
+The MarkovChainAll class has the attribute of Participant, which is a dummy class, such as p1, p2. And the respective participant attribute has the condition attributes, which are MarkovChain class objects, such as snum, fact. The respective condition attribute is a MarkovChain class object, which has the attribute of Markov matrix, Weighted Markov matrix, and the average objective difference. 
 
 #### subjectiveDistance.py
 

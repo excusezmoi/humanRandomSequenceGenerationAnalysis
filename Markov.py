@@ -14,6 +14,8 @@ class MarkovChain:
 
         self.createMarkovDict()
         self.generateMarkovMatrix()
+        
+        ##the following two are only applicable to number conditions
         self.generateMarkovMatrixWithWeighting()
         self.calculateAverageObjectiveDistance()
 
@@ -55,7 +57,7 @@ class MarkovChainAll:
         for participant in range(1, self.totalParticipant + 1):
             # print(participant)
             setattr(self, "p" + str(participant), Participant()) #set the attribute of the class MarkovChainAll to be MarkovChain, with the name being p1, p2, p3, etc.
-            for condition in ["snum", "fnum"]:
+            for condition in ["snum", "fnum", "sact", "fact"]:
 
                 setattr(getattr(self, "p" + str(participant)), 
                         str(condition), 
