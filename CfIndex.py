@@ -17,22 +17,34 @@ def CfIndex(li):
     def countInstances(lis):
         return Counter(lis)
 
-    def sumOccurences(countdict, le):
+    def sumOccurencesAndDevideByLength(countdict, le):
         return sum(countdict.values()) / le
     
-    return sumOccurences(countInstances(intervalCalc(elementPlacing(li))),len(li))
+    def divideByMaxCfIndex(sumOccurencesAndDevideByLength, le):
+        return sumOccurencesAndDevideByLength / ((le - 1)/2)
+    
+    # return sumOccurencesAndDevideByLength(countInstances(intervalCalc(elementPlacing(li))),len(li))
+    return divideByMaxCfIndex(sumOccurencesAndDevideByLength(countInstances(intervalCalc(elementPlacing(li))),len(li)),len(li))
 
 if __name__ == "__main__":
 
-    participantNumber = 4
-    numOrAct = "n"
-    slowOrFast = "f"
-    totalParticipant = 9
+    participantNumber = 20
+    numOrAct = "a"
+    slowOrFast = "s"
+    totalParticipant = 24
     txtFileFolder = configFilePath("FOLDER", "responseFileFolder")
     
-    # print(CfIndexExe(participantNumber, numOrAct, slowOrFast, totalParticipant, txtFileFolder))
-    print(CfIndex(participantNumber = participantNumber, 
+    # print(CfIndex(participantNumber = participantNumber, 
+    #                     numOrAct = numOrAct, 
+    #                     slowOrFast = slowOrFast, 
+    #                     totalParticipant = totalParticipant, 
+    #                     txtFileFolder = txtFileFolder))
+    
+    for participantNumber in range(1, 1 + totalParticipant):
+        print(CfIndex(participantNumber = participantNumber, 
                         numOrAct = numOrAct, 
                         slowOrFast = slowOrFast, 
                         totalParticipant = totalParticipant, 
                         txtFileFolder = txtFileFolder))
+    # li = [1,4,2,1,0,5,1,2,7,6]
+    # print(CfIndex(li))
