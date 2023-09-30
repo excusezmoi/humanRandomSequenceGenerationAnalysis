@@ -181,7 +181,7 @@ def startToSimilarMatrix(participantNumber, numOrAct, totalParticipant):
 def startToSimilarMatrix2(participantNumber, numOrAct, totalParticipant):
     df = startToReadCSVAndConvertToFloat2(totalParticipant, numOrAct) #number of participants
     upperTriangle = createMatrix2(df, participantNumber, numOrAct) #df, participantNumber, numOrAct
-    plotMatrix(upperTriangle, numOrAct)
+    # plotMatrix(upperTriangle, numOrAct)
     similar = toSimilarityMatrix(upperTriangle)
     return similar
 
