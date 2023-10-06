@@ -5,6 +5,8 @@ from matplotlib import pyplot as plt
 import seaborn as sns
 import scipy.stats as stats
 
+from utils import matrixCorr
+
 
 def googleMatrix():
     return np.array(
@@ -15,11 +17,6 @@ def googleMatrix():
     [126000,144000,76400,11000000,16700000,3070000],
     [75700,170000,450000,1290000,481000,18400000]])
 
-def matrixCorr(matrix1, matrix2):
-    matrix1Flat = matrix1.flatten()
-    matrix2Flat = matrix2.flatten()
-    return stats.spearmanr(matrix1Flat, matrix2Flat)
-
 
 
 
@@ -29,52 +26,9 @@ if __name__ == "__main__":
 
     theAnswer = MarkovChainAll(totalParticipant, txtFileFolder)
 
-    dropOut = {}
+    dropOut = {3,14,24}
 
-    def plotCorrSequenceGoogle():
-        recordS = []
-        google = googleMatrix()
-        for participant in range(1, totalParticipant + 1):
-            if participant in dropOut:
-                continue
-            ma = getattr(theAnswer, "p" + str(participant)).sact.MarkovMatrix
-            recordS.append(matrixCorr(ma, google)[0])
-        # print(record)
-        # plt.bar(range(totalParticipant), record)
-        plt.hist(recordS, bins = 10, ec = "black", alpha = 0.5, label = "sact")
-
-
-        recordF = []
-        google = googleMatrix()
-        for participant in range(1, totalParticipant + 1):
-            if participant in dropOut:
-                continue
-            ma = getattr(theAnswer, "p" + str(participant)).fact.MarkovMatrix
-            recordF.append(matrixCorr(ma, google)[0])
-        # print(record)
-        # plt.bar(range(totalParticipant), record)
-        plt.hist(recordF, bins = 10, ec = "black", alpha = 0.5, label = "fact")
-
-        plt.legend(loc='upper right')
-        plt.title('Sequence and Google Correlation Distribution')
-        plt.show()
-
-        # res = stats.wilcoxon(recordS, recordF)
-        # print(res)
-        accuracy = sum(i < j for i, j in zip(recordS, recordF)) / len(recordS)
-        print(accuracy)
-
-    def plotCorrSubGoogle():
-        subAndGoogle = []
-        for participantNumber in range(1,totalParticipant+1):
-            matrix1 = startToSimilarMatrix2(participantNumber, "a", totalParticipant)
-            matrix2 = googleMatrix()
-            subAndGoogle.append(matrixCorr(matrix1, matrix2)[0])
-        
-        plt.hist(subAndGoogle, bins = 10, ec = "black", alpha = 0.5, label = "subAndGoogle")
-        plt.show()
-
-    def plotCorrSequenceSub():
+    def subSequenceCorrPlot():
         recordS = []
 
         for participant in range(1, totalParticipant + 1):
@@ -85,7 +39,7 @@ if __name__ == "__main__":
             recordS.append(matrixCorr(ma, sub)[0])
         # print(record)
         # plt.bar(range(totalParticipant), record)
-        plt.hist(recordS, bins = 10, ec = "black", alpha = 0.5, label = "sact")
+        plt.hist(recordS, bins = 10, ec = "black", alpha = 0.5, label = "slow")
 
 
         recordF = []
@@ -98,10 +52,10 @@ if __name__ == "__main__":
             recordF.append(matrixCorr(ma, sub)[0])
         # print(record)
         # plt.bar(range(totalParticipant), record)
-        plt.hist(recordF, bins = 10, ec = "black", alpha = 0.5, label = "fact")
+        plt.hist(recordF, bins = 10, ec = "black", alpha = 0.5, label = "fast")
 
         plt.legend(loc='upper right')
-        plt.title('Sequence and Subjective Correlation Distribution')
+        plt.title('Subjective and Markov Matrix Correlation Distribution')
         plt.show()
 
         # res = stats.wilcoxon(recordS, recordF)
@@ -109,10 +63,58 @@ if __name__ == "__main__":
         accuracy = sum(i < j for i, j in zip(recordS, recordF)) / len(recordS)
         print(accuracy)
 
-    plotCorrSequenceGoogle() 
+    def googleSequenceCorrPlot():
+        recordS = []
+        google = googleMatrix()
+        for participant in range(1, totalParticipant + 1):
+            if participant in dropOut:
+                continue
+            ma = getattr(theAnswer, "p" + str(participant)).sact.MarkovMatrix
+            recordS.append(matrixCorr(ma, google)[0])
+        # print(record)
+        # plt.bar(range(totalParticipant), record)
+        plt.hist(recordS, bins = 10, ec = "black", alpha = 0.5, label = "slow")
+
+
+        recordF = []
+        google = googleMatrix()
+        for participant in range(1, totalParticipant + 1):
+            if participant in dropOut:
+                continue
+            ma = getattr(theAnswer, "p" + str(participant)).fact.MarkovMatrix
+            recordF.append(matrixCorr(ma, google)[0])
+        # print(record)
+        # plt.bar(range(totalParticipant), record)
+        plt.hist(recordF, bins = 10, ec = "black", alpha = 0.5, label = "fast")
+
+        plt.legend(loc='upper right')
+        plt.title('Google and Markov Matrix Correlation Distribution')
+        plt.show()
+
+        # res = stats.wilcoxon(recordS, recordF)
+        # print(res)
+        accuracy = sum(i < j for i, j in zip(recordS, recordF)) / len(recordS)
+        print(accuracy)
+
+    def subGoogleCorrPlot():
+        subAndGoogle = []
+        for participantNumber in range(1,totalParticipant+1):
+            matrix1 = startToSimilarMatrix2(participantNumber, "a", totalParticipant)
+            matrix2 = googleMatrix()
+            subAndGoogle.append(matrixCorr(matrix1, matrix2)[0])
+        
+        plt.hist(subAndGoogle, bins = 10, ec = "black", alpha = 0.5, label = "subAndGoogle")
+        plt.title('Google and Subjective Similarity Matrix Correlation Distribution')
+        plt.show()
+
+
+    # subSequenceCorrPlot() 
+    # WilcoxonResult(statistic=40.0, pvalue=0.0009626150131225586)
+    # accuracy: 0.83333
+
+    # googleSequenceCorrPlot() 
     #WilcoxonResult(statistic=34.0, pvalue=0.0004298686981201172)
     #accuracy: 0.83333
 
-    # plotCorrSequenceSub() 
-    # WilcoxonResult(statistic=40.0, pvalue=0.0009626150131225586)
-    # accuracy: 0.83333
+    subGoogleCorrPlot()
+

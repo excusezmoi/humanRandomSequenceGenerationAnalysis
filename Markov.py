@@ -76,7 +76,7 @@ if __name__ == "__main__":
     # theAnswer.p1 contains two attributes that are MarkovChain objects for participant 1:
     # theAnswer.p1.snum and theAnswer.p1.fnum
 
-    print(1, theAnswer.p1.snum.averageObjectiveDistance)
+    print(1, theAnswer.p1.snum.MarkovMatrix)
     print(1, theAnswer.p1.fnum.averageObjectiveDistance)
 
     # print(theAnswer.p1.snum.txtFile == theAnswer.p2.snum.txtFile)

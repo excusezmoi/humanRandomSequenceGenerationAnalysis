@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import scipy.stats as stats
 import matplotlib.pyplot as plt
 import configparser
 import os
@@ -189,6 +190,13 @@ def startToSimilarMatrix2(participantNumber, numOrAct, totalParticipant):
 def similarityToDissimilarity(similarityMatrix):
     dissimilarityMatrix = 1 - similarityMatrix
     return dissimilarityMatrix
+
+#Calculate the Spearman correlation of two matrices
+def matrixCorr(matrix1, matrix2):
+    matrix1Flat = matrix1.flatten()
+    matrix2Flat = matrix2.flatten()
+    return stats.spearmanr(matrix1Flat, matrix2Flat)
+    #p-value small: there is a significant correlation between the two matrices
 
 #read the random generated response from txt file
 def readResponseTxtFile(filePath):

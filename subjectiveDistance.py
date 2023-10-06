@@ -7,6 +7,7 @@ import numpy as np
 from utils import configFilePath, startToReadCSVAndConvertToFloat, readResponseTxtFile, correctDict
 from utils import configFilePath, startToReadCSVAndConvertToFloat2, readResponseTxtFile, correctDict2
 from Markov import MarkovChainAll
+from actionSequence import googleMatrix
 
 #calculate the average distance of true random sequence and the generated sequence 
 
@@ -82,7 +83,10 @@ def allDistanceDict(participantNumber, totalParticipant, fileFolder):
     allDistanceDict = subjectiveDistanceDict(participantNumber, totalParticipant, fileFolder)
     allDistanceDict["sNumPrac"] = getattr(getattr(theAnswer, "p" + str(participantNumber)), "snum").averageObjectiveDistance
     allDistanceDict["fNumPrac"] = getattr(getattr(theAnswer, "p" + str(participantNumber)), "fnum").averageObjectiveDistance
-    allDistanceDict["realDistance"] = (allDistanceDict["sNumPrac"] + allDistanceDict["fNumPrac"]) / 2
+    allDistanceDict["realNumDistance"] = (allDistanceDict["sNumPrac"] + allDistanceDict["fNumPrac"]) / 2
+
+    allDistanceDict["sActPrac"] = np.multiply(getattr(getattr(theAnswer, "p" + str(participantNumber)), "sact").MarkovMatrix, googleMatrix()).sum()
+    allDistanceDict["fActPrac"] = np.multiply(getattr(getattr(theAnswer, "p" + str(participantNumber)), "fact").MarkovMatrix, googleMatrix()).sum()
     return allDistanceDict
 
 def dictToXLSX(dic, file):
@@ -122,6 +126,8 @@ if __name__ == "__main__":
 
     # Dici = allDistanceDict(participantNumber, totalParticipant, fileFolder)
     # print(Dici)
+
+    
     for participantNumber in range(1, totalParticipant+1):
         Dici = allDistanceDict(participantNumber, totalParticipant, fileFolder)
         dictToXLSX(Dici, outputFile)

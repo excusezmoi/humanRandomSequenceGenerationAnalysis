@@ -2,6 +2,10 @@ from collections import Counter
 
 from utils import configFilePath, responseFileReadingDecorator
 
+import numpy as np
+
+import scipy.stats as stats
+
 @responseFileReadingDecorator
 def CfIndex(li):
     def elementPlacing(li):
@@ -30,7 +34,7 @@ if __name__ == "__main__":
 
     participantNumber = 20
     numOrAct = "a"
-    slowOrFast = "s"
+    slowOrFast = "f"
     totalParticipant = 24
     txtFileFolder = configFilePath("FOLDER", "responseFileFolder")
     
@@ -39,12 +43,33 @@ if __name__ == "__main__":
     #                     slowOrFast = slowOrFast, 
     #                     totalParticipant = totalParticipant, 
     #                     txtFileFolder = txtFileFolder))
-    
+    s = []
     for participantNumber in range(1, 1 + totalParticipant):
-        print(CfIndex(participantNumber = participantNumber, 
+        # print(CfIndex(participantNumber = participantNumber, 
+        #                 numOrAct = numOrAct, 
+        #                 slowOrFast = slowOrFast, 
+        #                 totalParticipant = totalParticipant, 
+        #                 txtFileFolder = txtFileFolder))
+        s.append(CfIndex(participantNumber = participantNumber, 
                         numOrAct = numOrAct, 
-                        slowOrFast = slowOrFast, 
+                        slowOrFast = "s", 
+                        totalParticipant = totalParticipant, 
+                        txtFileFolder = txtFileFolder))
+    f = []
+    for participantNumber in range(1, 1 + totalParticipant):
+        # print(CfIndex(participantNumber = participantNumber, 
+        #                 numOrAct = numOrAct, 
+        #                 slowOrFast = slowOrFast, 
+        #                 totalParticipant = totalParticipant, 
+        #                 txtFileFolder = txtFileFolder))
+        f.append(CfIndex(participantNumber = participantNumber,
+                        numOrAct = numOrAct, 
+                        slowOrFast = "f", 
                         totalParticipant = totalParticipant, 
                         txtFileFolder = txtFileFolder))
     # li = [1,4,2,1,0,5,1,2,7,6]
     # print(CfIndex(li))
+
+    res = stats.wilcoxon(np.array(s), np.array(f))
+    print(s, f)
+    print(res)

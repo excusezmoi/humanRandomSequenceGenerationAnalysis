@@ -22,7 +22,7 @@ data = openxlsx::read.xlsx(config$FILES$distanceDataXLSXFile)
 data = data[1:totalParticipants,]
 
 #踢人
-data <- subset(data, subjectNumber != "3")
+data <- subset(data, subjectNumber != "3",subjectNumber != "14")
 # 可能要踢王俊佑
 
 
@@ -52,6 +52,16 @@ sdDataNum = sdDataNum[,c("subjectNumber","types","distance")]
 anova_result_num <- sdDataNum %>% anova_test(distance ~ types + Error(subjectNumber/types))
 anova_result_num
 
+#effect size of ANOVA
+class(anova_result_num)
+anova_result_num[3]
+#rstatix::eta_squared(anova_result_num)
+#rstatix::eta_squared(anova_result_num$ANOVA)
+
+eta_squared_g <- 0.017  # Replace with your actual value
+
+f_cohen <- sqrt(eta_squared_g / (1 - eta_squared_g))
+f_cohen
 
 #plot
 # Create a new data frame with the mean and standard error for each condition
@@ -63,18 +73,27 @@ means$se <- se$distance
 
 # Plot the data
 
+
+numSubLabels <- c("expected", "fast", "slow")
+
 ggplot(means, aes(x = types, y = distance)) +
   geom_point(size = 0.5) +
   geom_line(aes(group = subjectNumber)) +
   geom_errorbar(aes(ymin = distance - sd(distance)/sqrt(length(distance)), 
                     ymax = distance + sd(distance)/sqrt(length(distance))),
                 width = 0.2)+
-    
-  labs(x = "Types", y = "Distance") +
+  scale_x_discrete(labels = numSubLabels) +  # Change x-axis labels
+  labs(x = "Types", y = "Subjective Distance") +
   theme_classic()
 
-# Perform one-way repeated measures ANOVA on the data
-anova_result_num <- sdDataNum %>% anova_test(distance ~ types + Error(subjectNumber/types))
+
+
+
+
+
+
+
+
 
 # Perform pairwise t-tests and adjust for multiple comparisons using the Holm method
 posthoc_results_num <- sdDataNum %>% 
@@ -86,7 +105,15 @@ posthoc_results_num <- sdDataNum %>%
 posthoc_results_num
 # significant for average VS f and average VS s
 
+paired_t_eff <- sdDataNum %>% cohens_d(distance ~ types, paired = TRUE)
+paired_t_eff
 
+# Assuming d_cohen is your Cohen's d value and n is the number of paired observations
+d_cohen <- 1.18  # Replace with your actual value
+n <- 23  # Replace with your actual value
+
+DZ <- d_cohen / sqrt(n)
+DZ
 
 
 
@@ -109,6 +136,7 @@ se$distance <- se$distance/ sqrt(length(sdDataAct$subjectNumber))
 means$se <- se$distance
 
 # Plot the data
+numSubLabels <- c("expected", "fast", "slow")
 ggplot(means, aes(x = types, y = distance)) +
   geom_point(size = 0.5) +
   geom_line(aes(group = subjectNumber)) +
@@ -116,7 +144,8 @@ ggplot(means, aes(x = types, y = distance)) +
                     ymax = distance + sd(distance)/sqrt(length(distance))),
                 width = 0.2)+
   
-  labs(x = "Types", y = "Distance") +
+  scale_x_discrete(labels = numSubLabels) + 
+  labs(x = "Types", y = "Subjective Distance") +
   theme_classic()
 
 
@@ -133,65 +162,64 @@ posthoc_results_act <- sdDataAct %>%
 posthoc_results_act
 # significant for f VS s
 
-
-
-
-
+paired_t_eff <- sdDataAct %>% cohens_d(distance ~ types, paired = TRUE)
+paired_t_eff
 
 
 
 
 
 #realdata: not a good idea
-realData <- gather(data = data, key = realTypes, value = realDistance, mu, sNumPrac, fNumPrac)
+realData <- gather(data = data, key = realTypes, value = realNumDistance, mu, sNumPrac, fNumPrac)
 #$mu <- as.numeric(realData$mu)
 #realData$sNumPrac <- as.numeric(realData$sNumPrac)
-realData$realDistance <- as.numeric(realData$realDistance)
+realData$realNumDistance <- as.numeric(realData$realNumDistance)
 
-realData <- subset(realData, subjectNumber != "3")
+realData <- subset(realData, subjectNumber != "3",subjectNumber != "14")
 
 #realData2 <- subset(realData)
 
-anovaRealResult <- realData %>% anova_test(realDistance ~ realTypes + Error(subjectNumber/realTypes))
+anovaRealResult <- realData %>% anova_test(realNumDistance ~ realTypes + Error(subjectNumber/realTypes))
 anovaRealResult
 
-#t-test between mu and sNumPrac: not sig
+#t-test between mu and sNumPrac
 t.test(data$sNumPrac, mu = 1.9444444)
 cohen.d(data$sNumPrac, mu = 1.9444444, f=NA)
 
-#t-test between mu and fNumPrac: not sig
+#t-test between mu and fNumPrac
 t.test(data$fNumPrac, mu = 1.9444444)
 cohen.d(data$fNumPrac, f = NA, mu = 1.9444444)
 
-#t-test between sNumPrac and fNumPrac: sig
+#t-test between sNumPrac and fNumPrac
 t.test(data$sNumPrac, data$fNumPrac, paired = TRUE)
-#cohensD(data$sNumPrac, data$fNumPrac): medium to large
+#cohensD(data$sNumPrac, data$fNumPrac)
 cohen.d(data$sNumPrac, data$fNumPrac, paired = TRUE)
 
 
 
-realData2 <- gather(data = data, key = realTypes, value = realDistance, sNumPrac, fNumPrac)
-realData2 <- subset(realData2, subjectNumber != "3")
-realData2$realDistance <- as.numeric(realData2$realDistance)
-realData2 = realData2[,c("subjectNumber","realTypes","realDistance")]
+realData2 <- gather(data = data, key = realTypes, value = realNumDistance, sNumPrac, fNumPrac)
+realData2 <- subset(realData2, subjectNumber != "3", subjectNumber != "14")
+realData2$realNumDistance <- as.numeric(realData2$realNumDistance)
+realData2 = realData2[,c("subjectNumber","realTypes","realNumDistance")]
 #plot
 # Create a new data frame with the mean and standard error for each condition
 realData2$realTypes <- factor(realData2$realTypes)
-means <- aggregate(realDistance ~ realTypes + subjectNumber, realData2, mean)
-se <- aggregate(realDistance ~ realTypes + subjectNumber, realData2, sd) #/ sqrt(length(realData$subjectNumber))
-se$realDistance <- se$realDistance/ sqrt(length(realData2$subjectNumber))
-means$se <- se$realDistance
+means <- aggregate(realNumDistance ~ realTypes + subjectNumber, realData2, mean)
+se <- aggregate(realNumDistance ~ realTypes + subjectNumber, realData2, sd) #/ sqrt(length(realData$subjectNumber))
+se$realNumDistance <- se$realNumDistance/ sqrt(length(realData2$subjectNumber))
+means$se <- se$realNumDistance
 
 # Plot the data
-ggplot(means, aes(x = realTypes, y = realDistance)) +
+tTestLabel <- c("fast", "slow")
+ggplot(means, aes(x = realTypes, y = realNumDistance)) +
   geom_point(size = 0.5) +
   geom_line(aes(group = subjectNumber)) +
-  geom_errorbar(aes(ymin = realDistance - sd(realDistance)/sqrt(length(realDistance)), 
-                    ymax = realDistance + sd(realDistance)/sqrt(length(realDistance))),
+  geom_errorbar(aes(ymin = realNumDistance - sd(realNumDistance)/sqrt(length(realNumDistance)), 
+                    ymax = realNumDistance + sd(realNumDistance)/sqrt(length(realNumDistance))),
                 width = 0.2)+
   geom_hline(yintercept = 1.94444, linetype = "dotted") +
-  
-  labs(x = "realTypes", y = "realDistance") +
+  scale_x_discrete(labels = tTestLabel) + 
+  labs(x = "Types", y = "Objective Distance") +
   theme_classic()
 
 
@@ -200,6 +228,24 @@ ggplot(means, aes(x = realTypes, y = realDistance)) +
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # correlation between subjective distance and objective distance in number conditions
+print(data$sNumPrac)
 cor(data$sNumDistance, data$sNumPrac)
 cor(data$fNumDistance, data$fNumPrac)
