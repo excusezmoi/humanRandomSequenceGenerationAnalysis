@@ -31,9 +31,23 @@ Perform MDS analysis on the subjective similarity data. The MDSPlotter class has
 
 Perform clustering analysis on the subjective similarity data. Nothing is found in this step.
 
-#### similarityCorrelation.py
+#### numSimilarityCorrelations.py
 
-Calculate the correlation of the subjective similarity matrices between two participants.
+(Originally: Calculate the correlation of the subjective similarity matrices between two participants.)
+
+Calculate the following 3 correlations:
+
+##### 1. subSequenceCorrPlot(totalParticipant, dropOut):
+
+Plot the correlations between the subjective similarity rating and the actual markov chain distance of the sequences into a distribution. 
+
+##### 2. objSequenceCorrPlot(totalParticipant, dropOut):
+
+Plot the correlation between objective distance and the actual markov chain distance of the sequences into a distribution.
+
+##### 3. subObjCorrPlot(totalParticipant, dropOut):
+
+Plot the correlation between subjective similarity rating and objective distance into a distribution.
 
 ### Both Subjective Similarity and Actual Sequence Related
 

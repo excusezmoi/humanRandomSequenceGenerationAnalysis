@@ -13,6 +13,13 @@ def corOfSimilarityMatrices(numOrAct,participantNumber1, participantNumber2, tot
     similar2 = startToSimilarMatrix(participantNumber2, numOrAct, totalParticipant)
     return matrixCorr(similar1, similar2)
 
+def objectiveDistanceMatrix():
+    fullMatrix = np.array([[5 for i in range(6)] for j in range(6)])
+    # print(fullMatrix)
+    objDisMatrix = fullMatrix - np.array([[i for i in range(6)], [1, 0, 1, 2, 3, 4], [2, 1, 0, 1, 2, 3], [3, 2, 1, 0, 1, 2], [4, 3, 2, 1, 0, 1], [5, 4, 3, 2, 1, 0]])
+    # print(objDisMatrix)
+    return objDisMatrix
+
 def subSequenceCorrPlot(totalParticipant, dropOut):
     theAnswer = MarkovChainAll(totalParticipant, configFilePath("FOLDER","responseFileFolder"))
     recordS = []
@@ -61,7 +68,7 @@ def objSequenceCorrPlot(totalParticipant, dropOut):
         if participant in dropOut:
             continue
         ma = getattr(theAnswer, "p" + str(participant)).snum.MarkovMatrix
-        recordS.append(matrixCorr(ma, objDisMatrix)[0])
+        recordS.append(matrixCorr(ma, objectiveDistanceMatrix())[0])
 
     plt.hist(recordS, bins = 10, ec = "black", alpha = 0.5, label = "slow")
 
@@ -72,7 +79,7 @@ def objSequenceCorrPlot(totalParticipant, dropOut):
         if participant in dropOut:
             continue
         ma = getattr(theAnswer, "p" + str(participant)).fnum.MarkovMatrix
-        recordF.append(matrixCorr(ma, objDisMatrix)[0])
+        recordF.append(matrixCorr(ma, objectiveDistanceMatrix())[0])
 
     plt.hist(recordF, bins = 10, ec = "black", alpha = 0.5, label = "fast")
 
@@ -91,7 +98,7 @@ def subObjCorrPlot(totalParticipant, dropOut):
         if participant in dropOut:
             continue
         similar1 = startToSimilarMatrix(participant, "n", totalParticipant)
-        record.append(matrixCorr(similar1, objDisMatrix)[0])
+        record.append(matrixCorr(similar1, objectiveDistanceMatrix())[0])
     
     plt.hist(record, bins = 10, ec = "black", alpha = 0.5)
     plt.title('Subjective and Objective Similarity Matrix Correlation Distribution')
@@ -101,25 +108,19 @@ def subObjCorrPlot(totalParticipant, dropOut):
 
 if __name__ == "__main__":
     
-    participantNumber1 = 1
-    participantNumber2 = 2
-    totalParticipant = 24
-    numOrAct = "n"
-
-    dropOut = {}
-
+    # numOrAct = "n"
+    # participantNumber1 = 1
+    # participantNumber2 = 2
     # print(corOfSimilarityMatrices(numOrAct,participantNumber1, participantNumber2, totalParticipant))
-    fullMatrix = np.array([[5 for i in range(6)] for j in range(6)])
-    print(fullMatrix)
-    objDisMatrix = fullMatrix - np.array([[i for i in range(6)], [1, 0, 1, 2, 3, 4], [2, 1, 0, 1, 2, 3], [3, 2, 1, 0, 1, 2], [4, 3, 2, 1, 0, 1], [5, 4, 3, 2, 1, 0]])
-    print(objDisMatrix)
 
 
+    totalParticipant = 24
+    dropOut = {}
 
     # subSequenceCorrPlot(totalParticipant, dropOut)
 
     # objSequenceCorrPlot(totalParticipant, dropOut)
     
-    # subObjCorrPlot(totalParticipant, dropOut)
+    subObjCorrPlot(totalParticipant, dropOut)
 
         
