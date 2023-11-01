@@ -7,40 +7,37 @@ class MarkovChain:
     def __init__(self, txtFile):
         self.txtFile = txtFile
         self.lengthTXTFile = len(txtFile)
-        self.MarkovDict = None
-        self.MarkovMatrix = None
-        self.MarkovMatrixWithWeighting = None
-        self.averageObjectiveDistance = None
+        self.MarkovDict = self.createMarkovDict()
+        self.MarkovMatrix = self.generateMarkovMatrix()
 
-        self.createMarkovDict()
-        self.generateMarkovMatrix()
-        
-        ##the following two are only applicable to number conditions
-        self.generateMarkovMatrixWithWeighting()
-        self.calculateAverageObjectiveDistance()
+        #the following two are only applicable to number conditions
+        self.MarkovMatrixWithWeighting = self.generateMarkovMatrixWithWeighting()
+        self.averageObjectiveDistance = self.calculateAverageObjectiveDistance()
 
     def createMarkovDict(self):
         MarkovDict = {}
         for order, current in enumerate(self.txtFile):
             if order:
-                MarkovDict.setdefault((lastOne, current), 0)
-                MarkovDict[(lastOne, current)] += 1
+                MarkovDict[(lastOne, current)] = MarkovDict.get((lastOne, current), 0) + 1
             lastOne = current
-        self.MarkovDict = MarkovDict
+        return MarkovDict
 
     def generateMarkovMatrix(self):
-        self.MarkovMatrix = np.zeros((6, 6))
+        MarkovMatrix = np.zeros((6, 6))
         for pair, occurrences in self.MarkovDict.items():
             I = int(pair[0]) - 1
             J = int(pair[1]) - 1
-            self.MarkovMatrix[I, J] = occurrences
+            MarkovMatrix[I, J] = occurrences
+        return MarkovMatrix
 
     def generateMarkovMatrixWithWeighting(self):
         objectiveWeighting = np.array([[i for i in range(6)], [1, 0, 1, 2, 3, 4], [2, 1, 0, 1, 2, 3], [3, 2, 1, 0, 1, 2], [4, 3, 2, 1, 0, 1], [5, 4, 3, 2, 1, 0]])
-        self.MarkovMatrixWithWeighting = self.MarkovMatrix * objectiveWeighting
+        MarkovMatrixWithWeighting = self.MarkovMatrix * objectiveWeighting
+        return MarkovMatrixWithWeighting
 
     def calculateAverageObjectiveDistance(self):
-        self.averageObjectiveDistance = np.sum(self.MarkovMatrixWithWeighting) / (self.lengthTXTFile - 1)
+        averageObjectiveDistance = np.sum(self.MarkovMatrixWithWeighting) / (self.lengthTXTFile - 1)
+        return averageObjectiveDistance
 
 @responseFileReadingDecorator
 def createMarkovChain(txtFile):
@@ -76,8 +73,8 @@ if __name__ == "__main__":
     # theAnswer.p1 contains two attributes that are MarkovChain objects for participant 1:
     # theAnswer.p1.snum and theAnswer.p1.fnum
 
-    print(1, theAnswer.p1.snum.MarkovMatrix)
-    print(1, theAnswer.p1.fnum.averageObjectiveDistance)
+    print(1, theAnswer.p17.snum.MarkovMatrix)
+    print(1, theAnswer.p7.fnum.averageObjectiveDistance)
 
     # print(theAnswer.p1.snum.txtFile == theAnswer.p2.snum.txtFile)
     # print(theAnswer.p1 == theAnswer.p2)
