@@ -1,11 +1,10 @@
-from Markov import MarkovChainAll
-from utils import configFilePath, startToSimilarMatrix
 import numpy as np
 from matplotlib import pyplot as plt
 import seaborn as sns
 import scipy.stats as stats
 
-from utils import matrixCorr
+from utils import configFilePath, startToSimilarMatrix, matrixCorr
+from Markov import MarkovChainAll
 
 
 def googleMatrix():
