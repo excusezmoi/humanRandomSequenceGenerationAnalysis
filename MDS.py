@@ -5,13 +5,13 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.manifold import MDS
 
-from utils import startToSimilarMatrix2, startToReadCSVAndConvertToFloat2, createMatrix2, similarityToDissimilarity, toSimilarityMatrix
+from utils import startToSimilarMatrix, startToReadCSVAndConvertToFloat, createMatrix2, similarityToDissimilarity, toSimilarityMatrix
 
 class MDSPlotter:
     def __init__(self, numOrAct, totalParticipant):
         self.numOrAct = numOrAct
         self.totalParticipant = totalParticipant
-        self.df = startToReadCSVAndConvertToFloat2(totalParticipant, numOrAct)
+        self.df = startToReadCSVAndConvertToFloat(totalParticipant, numOrAct)
         # self.similar = startToSimilarMatrix(participantNumber, numOrAct, totalParticipant)
         # self.dissimilar = similarityToDissimilarity(self.similar)
 
@@ -28,7 +28,7 @@ class MDSPlotter:
         plt.show()
 
     def plotPersonalMDS(self, participantNumber):
-        similar = startToSimilarMatrix2(participantNumber, self.numOrAct, self.totalParticipant)
+        similar = startToSimilarMatrix(participantNumber, self.numOrAct, self.totalParticipant)
         dissimilar = similarityToDissimilarity(similar)
         self.plotMDS(dissimilar)
 
@@ -48,7 +48,7 @@ class MDSPlotter:
         fig, axs = plt.subplots(nrows=sideNumber, ncols=sideNumber, figsize=(8, 8))
         for i in range(self.totalParticipant):
             participantNumber = i + 1
-            df = startToReadCSVAndConvertToFloat2(self.totalParticipant, self.numOrAct)
+            df = startToReadCSVAndConvertToFloat(self.totalParticipant, self.numOrAct)
             upperTriangle = createMatrix2(df, participantNumber, self.numOrAct)
             similar = toSimilarityMatrix(upperTriangle)
             dissimilar = similarityToDissimilarity(similar)

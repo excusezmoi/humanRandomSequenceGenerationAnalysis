@@ -1,5 +1,5 @@
 from Markov import MarkovChainAll
-from utils import configFilePath, startToSimilarMatrix2
+from utils import configFilePath, startToSimilarMatrix
 import numpy as np
 from matplotlib import pyplot as plt
 import seaborn as sns
@@ -35,7 +35,7 @@ if __name__ == "__main__":
             if participant in dropOut:
                 continue
             ma = getattr(theAnswer, "p" + str(participant)).sact.MarkovMatrix
-            sub = startToSimilarMatrix2(participant, "a", totalParticipant)
+            sub = startToSimilarMatrix(participant, "a", totalParticipant)
             recordS.append(matrixCorr(ma, sub)[0])
         # print(record)
         # plt.bar(range(totalParticipant), record)
@@ -48,7 +48,7 @@ if __name__ == "__main__":
             if participant in dropOut:
                 continue
             ma = getattr(theAnswer, "p" + str(participant)).fact.MarkovMatrix
-            sub = startToSimilarMatrix2(participant, "a", totalParticipant)
+            sub = startToSimilarMatrix(participant, "a", totalParticipant)
             recordF.append(matrixCorr(ma, sub)[0])
         # print(record)
         # plt.bar(range(totalParticipant), record)
@@ -99,7 +99,7 @@ if __name__ == "__main__":
     def subGoogleCorrPlot():
         subAndGoogle = []
         for participantNumber in range(1,totalParticipant+1):
-            matrix1 = startToSimilarMatrix2(participantNumber, "a", totalParticipant)
+            matrix1 = startToSimilarMatrix(participantNumber, "a", totalParticipant)
             matrix2 = googleMatrix()
             subAndGoogle.append(matrixCorr(matrix1, matrix2)[0])
         

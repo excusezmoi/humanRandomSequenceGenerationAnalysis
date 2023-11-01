@@ -31,12 +31,7 @@ def convertValuesToFloat(df, currentNumberOfParticipants):
     return df
 
 #Integrate the above two functions
-def startToReadCSVAndConvertToFloat(currentNumberOfParticipants):
-    df = readCSVFile()
-    convertValuesToFloat(df, currentNumberOfParticipants)
-    return df
-
-def startToReadCSVAndConvertToFloat2(currentNumberOfParticipants, numberOrAction):
+def startToReadCSVAndConvertToFloat(currentNumberOfParticipants, numberOrAction):
     numOrAct = {"a": "Action", "n": "Number"}[numberOrAction]
     df = readCSVFile2(configFilePath("FILES", f"subjective{numOrAct}File"))
     convertValuesToFloat(df, currentNumberOfParticipants)
@@ -81,7 +76,7 @@ def correctDict2(df, participantNumber):
     print(goodDict)
     return df, goodDict
 
-# df = startToReadCSVAndConvertToFloat2(24, "a")
+# df = startToReadCSVAndConvertToFloat(24, "a")
 # correctDict2(df, 15)
 
 def createMatrix(df, participantNumber, numOrAct):
@@ -173,14 +168,7 @@ def toSimilarityMatrix(upperTriangle):
     return similarityMatrix
 
 def startToSimilarMatrix(participantNumber, numOrAct, totalParticipant):
-    df = startToReadCSVAndConvertToFloat(totalParticipant) #number of participants
-    upperTriangle = createMatrix(df, participantNumber, numOrAct) #df, participantNumber, numOrAct
-    plotMatrix(upperTriangle, numOrAct)
-    similar = toSimilarityMatrix(upperTriangle)
-    return similar
-
-def startToSimilarMatrix2(participantNumber, numOrAct, totalParticipant):
-    df = startToReadCSVAndConvertToFloat2(totalParticipant, numOrAct) #number of participants
+    df = startToReadCSVAndConvertToFloat(totalParticipant, numOrAct) #number of participants
     upperTriangle = createMatrix2(df, participantNumber, numOrAct) #df, participantNumber, numOrAct
     # plotMatrix(upperTriangle, numOrAct)
     similar = toSimilarityMatrix(upperTriangle)

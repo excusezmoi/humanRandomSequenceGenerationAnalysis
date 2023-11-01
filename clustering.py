@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.cluster import KMeans
 
-from utils import startToSimilarMatrix2, startToReadCSVAndConvertToFloat2, createMatrix2, toSimilarityMatrix
+from utils import startToSimilarMatrix, startToReadCSVAndConvertToFloat, createMatrix2, toSimilarityMatrix
 
 def clusteringElbowMethodExe(numOrAct, totalParticipant):
     #kmeans clustering of subjective similarity matrices
@@ -14,7 +14,7 @@ def clusteringElbowMethodExe(numOrAct, totalParticipant):
 
     for i in range(totalParticipant):
         participantNumber = i + 1
-        similarityMatrixAll.append(startToSimilarMatrix2(participantNumber, numOrAct, totalParticipant))
+        similarityMatrixAll.append(startToSimilarMatrix(participantNumber, numOrAct, totalParticipant))
 
     # create a numpy array to store the similarity matrices
     similarity_matrix_array = np.array(similarityMatrixAll)
@@ -46,7 +46,7 @@ def clusteringAnalysisExe(numOrAct, totalParticipant, numOfClusters):
 
     for i in range(totalParticipant):
         participantNumber = i+1
-        df = startToReadCSVAndConvertToFloat2(totalParticipant, numOrAct) #number of participants
+        df = startToReadCSVAndConvertToFloat(totalParticipant, numOrAct) #number of participants
         upperTriangle = createMatrix2(df, participantNumber, numOrAct) #df, participantNumber, numOrAct
         # plotMatrix(upperTriangle, numOrAct)
         similarityMatrixAll.append(toSimilarityMatrix(upperTriangle))

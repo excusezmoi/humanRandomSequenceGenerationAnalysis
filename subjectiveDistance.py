@@ -4,8 +4,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 
-from utils import configFilePath, startToReadCSVAndConvertToFloat, readResponseTxtFile, correctDict
-from utils import configFilePath, startToReadCSVAndConvertToFloat2, readResponseTxtFile, correctDict2
+from utils import configFilePath, startToReadCSVAndConvertToFloat, readResponseTxtFile, correctDict2
 from Markov import MarkovChainAll
 from actionSequence import googleMatrix
 
@@ -45,7 +44,7 @@ def printSubjectiveDistanceExe(participantNumber, numOrAct, slowOrFast, totalPar
 
     response, length = readResponseTxtFile(filePath)
     # print(response, length)
-    df = startToReadCSVAndConvertToFloat2(totalParticipant, numOrAct)
+    df = startToReadCSVAndConvertToFloat(totalParticipant, numOrAct)
     df, dictGood = correctDict2(df, participantNumber)
     randomDistance = randomSubjectiveDistance(df, dictGood)
     averageDistance = actualSequenceSubjectiveDistance(df, response, length, dictGood, numOrAct)
@@ -65,7 +64,7 @@ def subjectiveDistanceDict(participantNumber, totalParticipant, fileFolder):
             filePath = fileFolder + fileName
 
             response, length = readResponseTxtFile(filePath)
-            df = startToReadCSVAndConvertToFloat2(totalParticipant, numOrAct)
+            df = startToReadCSVAndConvertToFloat(totalParticipant, numOrAct)
             df, dictGood = correctDict2(df, participantNumber)
             randomDistance = randomSubjectiveDistance(df, dictGood)
             averageDistance = actualSequenceSubjectiveDistance(df, response, length, dictGood, numOrAct)
