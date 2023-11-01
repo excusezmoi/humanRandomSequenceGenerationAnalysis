@@ -49,6 +49,10 @@ Plot the correlation between objective distance and the actual markov chain dist
 
 Plot the correlation between subjective similarity rating and objective distance into a distribution.
 
+#### actSimilarityCorrelations.py
+
+Similar to numSimilarityCorrelations.py, but the correlations are calculated using action data.
+
 ### Both Subjective Similarity and Actual Sequence Related
 
 #### Markov.py
