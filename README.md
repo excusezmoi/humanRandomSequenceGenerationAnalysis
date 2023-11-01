@@ -49,6 +49,8 @@ Plot the correlation between objective distance and the actual markov chain dist
 
 Plot the correlation between subjective similarity rating and objective distance into a distribution.
 
+The accuracy printed out in the former two functions is the rate of successfully separating participants' two conditions (fast and slow).
+
 ### Both Subjective Similarity and Actual Sequence Related
 
 #### Markov.py
