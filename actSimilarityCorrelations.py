@@ -4,7 +4,7 @@ import seaborn as sns
 import scipy.stats as stats
 
 from utils import configFilePath, startToSimilarMatrix, matrixCorr
-from Markov import MarkovChainAll
+from MarkovAdvanced import MarkovChainAll
 
 
 def googleMatrix():
@@ -23,7 +23,7 @@ def subSequenceCorrPlot(totalParticipant, dropOut):
     for participant in range(1, totalParticipant + 1):
         if participant in dropOut:
             continue
-        ma = getattr(theAnswer, "p" + str(participant)).sact.MarkovMatrix
+        ma = getattr(theAnswer, "p" + str(participant)).sact.i0.MarkovMatrix
         sub = startToSimilarMatrix(participant, "a", totalParticipant)
         recordS.append(matrixCorr(ma, sub)[0])
     # print(record)
@@ -35,7 +35,7 @@ def subSequenceCorrPlot(totalParticipant, dropOut):
     for participant in range(1, totalParticipant + 1):
         if participant in dropOut:
             continue
-        ma = getattr(theAnswer, "p" + str(participant)).fact.MarkovMatrix
+        ma = getattr(theAnswer, "p" + str(participant)).fact.i0.MarkovMatrix
         sub = startToSimilarMatrix(participant, "a", totalParticipant)
         recordF.append(matrixCorr(ma, sub)[0])
     # print(record)
@@ -59,7 +59,7 @@ def googleSequenceCorrPlot(totalParticipant, dropOut):
     for participant in range(1, totalParticipant + 1):
         if participant in dropOut:
             continue
-        ma = getattr(theAnswer, "p" + str(participant)).sact.MarkovMatrix
+        ma = getattr(theAnswer, "p" + str(participant)).sact.i0.MarkovMatrix
         recordS.append(matrixCorr(ma, google)[0])
     # print(record)
     # plt.bar(range(totalParticipant), record)
@@ -71,7 +71,7 @@ def googleSequenceCorrPlot(totalParticipant, dropOut):
     for participant in range(1, totalParticipant + 1):
         if participant in dropOut:
             continue
-        ma = getattr(theAnswer, "p" + str(participant)).fact.MarkovMatrix
+        ma = getattr(theAnswer, "p" + str(participant)).fact.i0.MarkovMatrix
         recordF.append(matrixCorr(ma, google)[0])
     # print(record)
     # plt.bar(range(totalParticipant), record)

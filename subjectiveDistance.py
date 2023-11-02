@@ -5,8 +5,8 @@ import seaborn as sns
 import numpy as np
 
 from utils import configFilePath, startToReadCSVAndConvertToFloat, readResponseTxtFile, correctDict2
-from Markov import MarkovChainAll
-from actionSequence import googleMatrix
+from MarkovAdvanced import MarkovChainAll
+from actSimilarityCorrelations import googleMatrix
 
 #calculate the average distance of true random sequence and the generated sequence 
 
@@ -80,13 +80,14 @@ def subjectiveDistanceDict(participantNumber, totalParticipant, fileFolder):
 def allDistanceDict(participantNumber, totalParticipant, fileFolder):
     theAnswer = MarkovChainAll(totalParticipant, fileFolder)
     allDistanceDict = subjectiveDistanceDict(participantNumber, totalParticipant, fileFolder)
-    allDistanceDict["sNumPrac"] = getattr(getattr(theAnswer, "p" + str(participantNumber)), "snum").averageObjectiveDistance
-    allDistanceDict["fNumPrac"] = getattr(getattr(theAnswer, "p" + str(participantNumber)), "fnum").averageObjectiveDistance
+    allDistanceDict["sNumPrac"] = getattr(getattr(getattr(theAnswer, "p" + str(participantNumber)), "snum"),"i0").averageObjectiveDistance
+    allDistanceDict["fNumPrac"] = getattr(getattr(getattr(theAnswer, "p" + str(participantNumber)), "fnum"),"i0").averageObjectiveDistance
     allDistanceDict["realNumDistance"] = (allDistanceDict["sNumPrac"] + allDistanceDict["fNumPrac"]) / 2
 
-    allDistanceDict["sActPrac"] = np.multiply(getattr(getattr(theAnswer, "p" + str(participantNumber)), "sact").MarkovMatrix, googleMatrix()).sum()
-    allDistanceDict["fActPrac"] = np.multiply(getattr(getattr(theAnswer, "p" + str(participantNumber)), "fact").MarkovMatrix, googleMatrix()).sum()
+    allDistanceDict["sActPrac"] = np.multiply(getattr(getattr(getattr(theAnswer, "p" + str(participantNumber)), "sact"),"i0").MarkovMatrix, googleMatrix()).sum()
+    allDistanceDict["fActPrac"] = np.multiply(getattr(getattr(getattr(theAnswer, "p" + str(participantNumber)), "fact"),"i0").MarkovMatrix, googleMatrix()).sum()
     return allDistanceDict
+
 
 def dictToXLSX(dic, file):
     # add the dictionary as an additional row to an existing xlsx file with keys being existing column names

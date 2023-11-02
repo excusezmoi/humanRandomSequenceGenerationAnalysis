@@ -5,7 +5,7 @@ import seaborn as sns
 import numpy as np
 
 from utils import startToSimilarMatrix, matrixCorr, configFilePath
-from Markov import MarkovChainAll
+from MarkovAdvanced import MarkovChainAll
 
 #similarity matrix correlation
 def corOfSimilarityMatrices(numOrAct,participantNumber1, participantNumber2, totalParticipant):
@@ -27,7 +27,7 @@ def subSequenceCorrPlot(totalParticipant, dropOut):
     for participant in range(1, totalParticipant + 1):
         if participant in dropOut:
             continue
-        ma = getattr(theAnswer, "p" + str(participant)).snum.MarkovMatrix
+        ma = getattr(theAnswer, "p" + str(participant)).snum.i0.MarkovMatrix
         sub = startToSimilarMatrix(participant, "n", totalParticipant)
         recordS.append(matrixCorr(ma, sub)[0])
     # print(record)
@@ -42,7 +42,7 @@ def subSequenceCorrPlot(totalParticipant, dropOut):
     for participant in range(1, totalParticipant + 1):
         if participant in dropOut:
             continue
-        ma = getattr(theAnswer, "p" + str(participant)).fnum.MarkovMatrix
+        ma = getattr(theAnswer, "p" + str(participant)).fnum.i0.MarkovMatrix
         sub = startToSimilarMatrix(participant, "n", totalParticipant)
         recordF.append(matrixCorr(ma, sub)[0])
 
@@ -67,7 +67,7 @@ def objSequenceCorrPlot(totalParticipant, dropOut):
     for participant in range(1, totalParticipant + 1):
         if participant in dropOut:
             continue
-        ma = getattr(theAnswer, "p" + str(participant)).snum.MarkovMatrix
+        ma = getattr(theAnswer, "p" + str(participant)).snum.i0.MarkovMatrix
         recordS.append(matrixCorr(ma, objectiveDistanceMatrix())[0])
 
     plt.hist(recordS, bins = 10, ec = "black", alpha = 0.5, label = "slow")
@@ -78,7 +78,7 @@ def objSequenceCorrPlot(totalParticipant, dropOut):
     for participant in range(1, totalParticipant + 1):
         if participant in dropOut:
             continue
-        ma = getattr(theAnswer, "p" + str(participant)).fnum.MarkovMatrix
+        ma = getattr(theAnswer, "p" + str(participant)).fnum.i0.MarkovMatrix
         recordF.append(matrixCorr(ma, objectiveDistanceMatrix())[0])
 
     plt.hist(recordF, bins = 10, ec = "black", alpha = 0.5, label = "fast")
@@ -117,10 +117,10 @@ if __name__ == "__main__":
     totalParticipant = 24
     dropOut = {}
 
-    # subSequenceCorrPlot(totalParticipant, dropOut)
+    subSequenceCorrPlot(totalParticipant, dropOut)
 
     # objSequenceCorrPlot(totalParticipant, dropOut)
     
-    subObjCorrPlot(totalParticipant, dropOut)
+    # subObjCorrPlot(totalParticipant, dropOut)
 
         
