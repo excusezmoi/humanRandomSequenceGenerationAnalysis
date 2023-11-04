@@ -27,7 +27,7 @@ def readCSVFile2(filePath):
 #Convert the values in the range iloc[1:,2:] of the dataframe to intger
 def convertValuesToFloat(df, currentNumberOfParticipants):
     df.iloc[0:currentNumberOfParticipants*2,2:17] = df.iloc[0:currentNumberOfParticipants*2,2:17].astype(int)/1000
-    print(df)
+    # print(df)
     return df
 
 #Integrate the above two functions
@@ -66,14 +66,14 @@ def correctDict(df, participantNumber, numOrAct):
         # print(df)
 
     goodDict = df.iloc[numberOfRow,2:17].to_dict()
-    print(goodDict)
+    # print(goodDict)
     return df, goodDict
 
 def correctDict2(df, participantNumber):
 
     numberOfRow = participantNumber - 1
     goodDict = df.iloc[numberOfRow,2:17].to_dict()
-    print(goodDict)
+    # print(goodDict)
     return df, goodDict
 
 # df = startToReadCSVAndConvertToFloat(24, "a")
@@ -112,7 +112,7 @@ def createMatrix(df, participantNumber, numOrAct):
         for j in range(1,7):
             if i<j:
                 upperTriangle[i-1,j-1] = df.loc[numberOfRow,f"({i}, {j})"]
-    print(upperTriangle)
+    # print(upperTriangle)
     return upperTriangle
 
 def createMatrix2(df, participantNumber, numOrAct):
@@ -132,7 +132,7 @@ def createMatrix2(df, participantNumber, numOrAct):
 
     [np.put(upperTriangle, [(i-1) * 6 + (j-1)], df.loc[numberOfRow,f"({i}, {j})"]) if not numOrAct else np.put(upperTriangle, [(i-1) * 6 + (j-1)], df.loc[numberOfRow,f"({as1[i]}, {as1[j]})"]) for i in range(1,7) for j in range(1,7) if i<j]
 
-    print(upperTriangle)
+    # print(upperTriangle)
     return upperTriangle
 
 
@@ -164,7 +164,7 @@ def toSimilarityMatrix(upperTriangle):
 
     # Fill the diagonal of the new matrix with the diagonal values of the original matrix
     np.fill_diagonal(similarityMatrix, 1)
-    print(similarityMatrix)
+    # print(similarityMatrix)
     return similarityMatrix
 
 def startToSimilarMatrix(participantNumber, numOrAct, totalParticipant):

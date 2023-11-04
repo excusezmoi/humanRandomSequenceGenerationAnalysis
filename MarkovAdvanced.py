@@ -3,7 +3,7 @@ from functools import reduce
 
 from utils import configFilePath, responseFileReadingDecorator
 
-class MarkovChain:
+class Condition:
     def __init__(self, txtFile):
         self.txtFile = txtFile
         self.lengthTXTFile = len(txtFile)
@@ -58,7 +58,7 @@ class Interval:
 
 @responseFileReadingDecorator
 def createMarkovChain(txtFile):
-    return MarkovChain(txtFile)
+    return Condition(txtFile)
 
 class MarkovChainAll:
     def __init__(self, totalParticipant, txtFileFolder):
@@ -86,7 +86,7 @@ if __name__ == "__main__":
     txtFileFolder = configFilePath("FOLDER","responseFileFolder")
 
     theAnswer = MarkovChainAll(totalParticipant, txtFileFolder)
-    # theAnswer.p1 contains two attributes that are MarkovChain objects for participant 1:
+    # theAnswer.p1 contains two attributes that are Condition objects for participant 1:
     # theAnswer.p1.snum and theAnswer.p1.fnum
 
     # print(1, theAnswer.p17.snum.MarkovMatrix)

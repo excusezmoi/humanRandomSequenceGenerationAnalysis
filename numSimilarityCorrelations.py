@@ -4,14 +4,9 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 
+from convenient import getNestedAttr
 from utils import startToSimilarMatrix, matrixCorr, configFilePath
 from MarkovAdvanced import MarkovChainAll
-
-#similarity matrix correlation
-def corOfSimilarityMatrices(numOrAct,participantNumber1, participantNumber2, totalParticipant):
-    similar1 = startToSimilarMatrix(participantNumber1, numOrAct, totalParticipant)
-    similar2 = startToSimilarMatrix(participantNumber2, numOrAct, totalParticipant)
-    return matrixCorr(similar1, similar2)
 
 def objectiveDistanceMatrix():
     fullMatrix = np.array([[5 for i in range(6)] for j in range(6)])
@@ -20,107 +15,76 @@ def objectiveDistanceMatrix():
     # print(objDisMatrix)
     return objDisMatrix
 
-def subSequenceCorrPlot(totalParticipant, dropOut):
-    theAnswer = MarkovChainAll(totalParticipant, configFilePath("FOLDER","responseFileFolder"))
-    recordS = []
+def objectiveMatrixList(totalParticipant, dropOut):
+    return [objectiveDistanceMatrix() for _ in range(totalParticipant - len(dropOut))]
 
-    for participant in range(1, totalParticipant + 1):
-        if participant in dropOut:
-            continue
-        ma = getattr(theAnswer, "p" + str(participant)).snum.i0.MarkovMatrix
-        sub = startToSimilarMatrix(participant, "n", totalParticipant)
-        recordS.append(matrixCorr(ma, sub)[0])
-    # print(record)
-    # plt.bar(range(totalParticipant), record)
-    plt.hist(recordS, bins = 10, ec = "black", alpha = 0.5, label = "slow")
+def subjectiveList(numOrAct, totalParticipant, dropOut):
+    return [startToSimilarMatrix(participant, numOrAct, totalParticipant) for participant in range(1, totalParticipant + 1) if participant not in dropOut]
 
+def sequenceList(theAnswer,slowOrFast, numOrAct, totalParticipant, dropOut, interval = 0):
+    return [getNestedAttr(theAnswer, f"p{participant}.{slowOrFast}{'num' if numOrAct == 'n' else 'act' if numOrAct == 'a' else None}.i{interval}.MarkovMatrix") for participant in range(1, totalParticipant + 1) if participant not in dropOut]
 
-    recordF = []
+def matrixCorrList(list1, list2):
+    return [matrixCorr(i, j)[0] for i, j in zip(list1, list2)] #return a list of correlation coefficients
 
-    
+def drawCorr(list1, list2, label):
+    plt.hist(matrixCorrList(list1, list2), bins = 10, ec = "black", alpha = 0.5, label = label)
 
-    for participant in range(1, totalParticipant + 1):
-        if participant in dropOut:
-            continue
-        ma = getattr(theAnswer, "p" + str(participant)).fnum.i0.MarkovMatrix
-        sub = startToSimilarMatrix(participant, "n", totalParticipant)
-        recordF.append(matrixCorr(ma, sub)[0])
-
-    # print(record)
-    # plt.bar(range(totalParticipant), record)
-    plt.hist(recordF, bins = 10, ec = "black", alpha = 0.5, label = "fast")
-
+def plotCorr(title = ''):
     plt.legend(loc='upper right')
-    plt.title('Subjective and Markov Matrix Correlation Distribution')
+    plt.title(title)
     plt.show()
 
-    # res = stats.wilcoxon(recordS, recordF)
-    # print(res)
-    accuracy = sum(i < j for i, j in zip(recordS, recordF)) / len(recordS)
-    # accuracy = [i < j for i, j in zip(recordS, recordF)]
-    print(accuracy)
-
-def objSequenceCorrPlot(totalParticipant, dropOut):
+def subSequenceCorrPlot(numOrAct, totalParticipant, dropOut, interval = 0):
     theAnswer = MarkovChainAll(totalParticipant, configFilePath("FOLDER","responseFileFolder"))
-    recordS = []
+    drawCorr(subjectiveList(numOrAct, totalParticipant, dropOut), sequenceList(theAnswer, "s", numOrAct, totalParticipant, dropOut, interval), "slow")
+    drawCorr(subjectiveList(numOrAct, totalParticipant, dropOut), sequenceList(theAnswer, "f", numOrAct, totalParticipant, dropOut, interval), "fast")
+    plotCorr('Subjective and Markov Matrix Correlation Distribution')
 
-    for participant in range(1, totalParticipant + 1):
-        if participant in dropOut:
-            continue
-        ma = getattr(theAnswer, "p" + str(participant)).snum.i0.MarkovMatrix
-        recordS.append(matrixCorr(ma, objectiveDistanceMatrix())[0])
+def objSequenceCorrPlot(numOrAct, totalParticipant, dropOut, interval = 0):
+    theAnswer = MarkovChainAll(totalParticipant, configFilePath("FOLDER","responseFileFolder"))
+    drawCorr(objectiveMatrixList(totalParticipant, dropOut), sequenceList(theAnswer, "s", numOrAct, totalParticipant, dropOut, interval), "slow")
+    drawCorr(objectiveMatrixList(totalParticipant, dropOut), sequenceList(theAnswer, "f", numOrAct, totalParticipant, dropOut, interval), "fast")
+    plotCorr('Objective and Markov Matrix Correlation Distribution')
 
-    plt.hist(recordS, bins = 10, ec = "black", alpha = 0.5, label = "slow")
+def subObjCorrPlot(numOrAct, totalParticipant, dropOut, interval = 0):
+    drawCorr(subjectiveList(numOrAct, totalParticipant, dropOut), objectiveMatrixList(totalParticipant, dropOut), None)
+    plotCorr('Subjective and Objective Similarity Matrix Correlation Distribution') 
 
-
-    recordF = []
-
-    for participant in range(1, totalParticipant + 1):
-        if participant in dropOut:
-            continue
-        ma = getattr(theAnswer, "p" + str(participant)).fnum.i0.MarkovMatrix
-        recordF.append(matrixCorr(ma, objectiveDistanceMatrix())[0])
-
-    plt.hist(recordF, bins = 10, ec = "black", alpha = 0.5, label = "fast")
-
-    plt.legend(loc='upper right')
-    plt.title('Objective and Markov Matrix Correlation Distribution')
-    plt.show()
-
-    # res = stats.wilcoxon(recordS, recordF)
-    # print(res)
-    accuracy = sum(i < j for i, j in zip(recordS, recordF)) / len(recordS)
-    print(accuracy)
-
-def subObjCorrPlot(totalParticipant, dropOut):
-    record = []
-    for participant in range(1, totalParticipant + 1):
-        if participant in dropOut:
-            continue
-        similar1 = startToSimilarMatrix(participant, "n", totalParticipant)
-        record.append(matrixCorr(similar1, objectiveDistanceMatrix())[0])
+def sfSeparationRate(numOrAct, totalParticipant, dropOut, interval = 0):
+    theAnswer = MarkovChainAll(totalParticipant, configFilePath("FOLDER","responseFileFolder"))
+    sSubSeq = matrixCorrList(subjectiveList(numOrAct, totalParticipant, dropOut), sequenceList(theAnswer, "s", numOrAct, totalParticipant, dropOut, interval))
+    fSubSeq = matrixCorrList(subjectiveList(numOrAct, totalParticipant, dropOut), sequenceList(theAnswer, "f", numOrAct, totalParticipant, dropOut, interval))
     
-    plt.hist(record, bins = 10, ec = "black", alpha = 0.5)
-    plt.title('Subjective and Objective Similarity Matrix Correlation Distribution')
-    plt.show()
+    subSeqRate = sum(i < j for i, j in zip(sSubSeq, fSubSeq)) / len(sSubSeq)
+    # print("Subjective Sequence Separation Rate: ", subSeqRate)
 
+    sObjSeq = matrixCorrList(objectiveMatrixList(totalParticipant, dropOut), sequenceList(theAnswer, "s", numOrAct, totalParticipant, dropOut, interval))
+    fObjSeq = matrixCorrList(objectiveMatrixList(totalParticipant, dropOut), sequenceList(theAnswer, "f", numOrAct, totalParticipant, dropOut, interval))
 
+    objSeqRate = sum(i < j for i, j in zip(sObjSeq, fObjSeq)) / len(sObjSeq)
+    # print("Objective Sequence Separation Rate: ", objSeqRate)
+
+    return subSeqRate, objSeqRate
 
 if __name__ == "__main__":
-    
-    # numOrAct = "n"
-    # participantNumber1 = 1
-    # participantNumber2 = 2
-    # print(corOfSimilarityMatrices(numOrAct,participantNumber1, participantNumber2, totalParticipant))
 
-
+    numOrAct = "n"
     totalParticipant = 24
     dropOut = {}
+    interval = 20
 
-    subSequenceCorrPlot(totalParticipant, dropOut)
+    # subSequenceCorrPlot2(numOrAct, totalParticipant, dropOut, interval)
+    # objSequenceCorrPlot2(numOrAct, totalParticipant, dropOut, interval)
+    # subObjCorrPlot2(numOrAct, totalParticipant, dropOut, interval)
 
-    # objSequenceCorrPlot(totalParticipant, dropOut)
-    
-    # subObjCorrPlot(totalParticipant, dropOut)
+    # separation rate
+    separation = [sfSeparationRate(numOrAct, totalParticipant, dropOut, inter) for inter in range(interval)]
+    subSeqRate, objSeqRate = zip(*separation)
 
-        
+    xValues = [i for i in range(interval)]
+    plt.plot(xValues, subSeqRate, label = "Subjective")
+    plt.plot(xValues, objSeqRate, label = "Objective")
+    plt.legend(loc='upper right')
+    plt.title('Sequence Separation Rate')
+    plt.show()
